@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Gentleman Barbershop Tbilisi — Professional Barbershop</title>
+<meta name="description" content="Gentleman Barbershop, Tbilisi. A gentlemen's collective and premium grooming services — haircuts, beard sculpting and hot-towel shaves. 4.8★ · 462 reviews. 13 Bidzina Kvernadze St." />
+<meta name="theme-color" content="#0c0c0c" />
+<meta property="og:title" content="Gentleman Barbershop Tbilisi" />
+<meta property="og:description" content="A gentlemen's collective and premium services. 4.8★ in Tbilisi." />
+<meta property="og:image" content="img/hero.jpg" />
+
+<link rel="icon" type="image/jpeg" href="barbershop-logo.jpg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&family=Noto+Sans+Georgian:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+<style>
+:root{
+  --bg:#0c0c0c;
+  --bg-2:#131313;
+  --card:#1a1a1a;
+  --card-2:#202020;
+  --text:#f3f1ee;
+  --muted:#9a9893;
+  --muted-2:#6b6a66;
+  --line:rgba(255,255,255,.10);
+  --line-2:rgba(255,255,255,.18);
+  --maxw:1280px;
+  --pad:clamp(16px,4vw,40px);
+  --r:22px;
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:auto}
+body{
+  font-family:'Inter',system-ui,sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.6;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+::selection{background:var(--text);color:var(--bg)}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad)}
+section{position:relative}
+
+/* ---- type ---- */
+h1,h2,h3,h4,.display{font-family:'Archivo',sans-serif;font-weight:800;
+  line-height:.98;letter-spacing:-.01em;text-transform:uppercase}
+.display{font-size:clamp(2.4rem,7vw,6rem);font-weight:900;letter-spacing:-.02em;overflow-wrap:break-word}
+.eyebrow{font-family:'Inter';font-weight:500;font-size:.72rem;letter-spacing:.32em;
+  text-transform:uppercase;color:var(--muted)}
+.lead{color:var(--muted);font-size:1.02rem;font-weight:300}
+
+/* ---- Georgian font overrides ---- */
+body.lang-ka{font-family:'Noto Sans Georgian','Inter',sans-serif}
+body.lang-ka h1,body.lang-ka h2,body.lang-ka h3,body.lang-ka h4,body.lang-ka .display{
+  font-family:'Noto Sans Georgian',sans-serif;font-weight:800;letter-spacing:0;line-height:1.05;text-transform:none}
+body.lang-ka .display{font-weight:900}
+body.lang-ka .eyebrow{letter-spacing:.14em;text-transform:none}
+body.lang-ka .btn,body.lang-ka .book-link,body.lang-ka .master-book,
+body.lang-ka .logo-mono b,body.lang-ka .ticker-track span,body.lang-ka .master-badge,
+body.lang-ka .nav-hours span,body.lang-ka .foot-col h4,body.lang-ka .price-row .dur,
+body.lang-ka .info-row small,body.lang-ka .field label,body.lang-ka .hours .hr .now{
+  font-family:'Noto Sans Georgian',sans-serif;letter-spacing:.04em;text-transform:none}
+
+/* ---- buttons / link arrows ---- */
+.book-link{display:inline-flex;align-items:center;gap:10px;font-family:'Archivo';
+  font-weight:600;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;
+  padding-bottom:4px;border-bottom:1px solid var(--line-2);transition:gap .3s var(--ease),border-color .3s}
+.book-link svg{width:14px;height:14px;transition:transform .3s var(--ease)}
+.book-link:hover{gap:16px;border-color:var(--text)}
+.book-link:hover svg{transform:translate(3px,-3px)}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:15px 28px;border-radius:50px;
+  font-family:'Archivo';font-weight:600;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;
+  transition:all .35s var(--ease)}
+.btn svg{width:15px;height:15px}
+.btn-light{background:var(--text);color:var(--bg)}
+.btn-light:hover{transform:translateY(-3px);box-shadow:0 14px 30px -12px rgba(255,255,255,.4)}
+.btn-out{border:1px solid var(--line-2);color:var(--text)}
+.btn-out:hover{border-color:var(--text);transform:translateY(-3px)}
+
+/* ---- header ---- */
+header{position:fixed;top:0;left:0;right:0;z-index:100;transition:background .4s,backdrop-filter .4s,border-color .4s;
+  border-bottom:1px solid transparent}
+.nav{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+  max-width:var(--maxw);margin:0 auto;padding:20px var(--pad)}
+header.scrolled{background:rgba(12,12,12,.82);backdrop-filter:blur(16px);border-color:var(--line)}
+/* mobile: blur repaints every scroll frame → use a near-opaque bg instead (no jank) */
+@media(max-width:768px){header.scrolled{background:rgba(12,12,12,.96);backdrop-filter:none}}
+header.scrolled .nav{padding:13px var(--pad)}
+.nav-left{display:flex;gap:30px}
+.nav-left a{font-size:.82rem;letter-spacing:.04em;color:var(--muted);transition:color .3s;position:relative}
+.nav-left a::after{content:"";position:absolute;left:0;bottom:-4px;width:0;height:1px;background:var(--text);transition:width .3s var(--ease)}
+.nav-left a:hover{color:var(--text)}
+.nav-left a:hover::after{width:100%}
+.logo-mono{justify-self:center;display:flex;align-items:center;gap:10px}
+.logo-mono img{width:46px;height:46px;border-radius:50%;object-fit:cover;border:1px solid var(--line-2)}
+.logo-mono b{font-family:'Archivo';font-weight:800;font-size:.95rem;letter-spacing:.06em}
+.nav-right{justify-self:end;display:flex;align-items:center;gap:18px}
+.nav-hours{text-align:right;line-height:1.25}
+.nav-hours small{display:block;font-size:.62rem;letter-spacing:.24em;color:var(--muted-2);text-transform:uppercase}
+.nav-hours span{font-family:'Archivo';font-weight:600;font-size:.8rem;letter-spacing:.04em}
+
+/* language switch */
+.lang-switch{display:flex;border:1px solid var(--line-2);border-radius:50px;overflow:hidden;flex:0 0 auto}
+.lang-btn{padding:7px 12px;font-family:'Archivo';font-weight:700;font-size:.68rem;letter-spacing:.08em;color:var(--muted);transition:.3s}
+.lang-btn.active{background:var(--text);color:var(--bg)}
+.lang-btn:not(.active):hover{color:var(--text)}
+
+.burger{display:none;flex-direction:column;gap:5px;padding:8px;z-index:120}
+.burger span{width:24px;height:2px;background:var(--text);transition:.35s var(--ease)}
+.burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.burger.open span:nth-child(2){opacity:0}
+.burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* ---- hero ---- */
+.hero{padding:96px var(--pad) 0}
+.hero-card{position:relative;max-width:var(--maxw);margin:0 auto;border-radius:var(--r);
+  overflow:hidden;min-height:min(82vh,760px);display:flex;align-items:flex-end}
+.hero-card img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  filter:grayscale(.35) brightness(.62) contrast(1.05);transform:scale(1.04);
+  transition:transform 1.2s var(--ease)}
+.hero-card:hover img.bg{transform:scale(1.08)}
+.hero-card::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(0,0,0,.78),rgba(0,0,0,.25) 55%,rgba(0,0,0,.55))}
+.hero-inner{position:relative;z-index:2;padding:clamp(28px,5vw,64px);width:100%}
+.hero-inner .eyebrow{margin-bottom:18px}
+.hero-inner h1{margin-bottom:26px}
+.hero-side{position:absolute;left:18px;top:50%;transform:translateY(-50%) rotate(180deg);
+  writing-mode:vertical-rl;font-family:'Archivo';font-weight:600;font-size:.68rem;
+  letter-spacing:.4em;text-transform:uppercase;color:rgba(255,255,255,.5);z-index:2}
+body.lang-ka .hero-side{font-family:'Noto Sans Georgian',sans-serif;letter-spacing:.2em;text-transform:none}
+.hero-top{position:absolute;top:clamp(20px,4vw,40px);right:clamp(20px,4vw,40px);z-index:2;
+  display:flex;gap:10px}
+.hero-top .dot{width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.3);
+  display:grid;place-items:center;color:#fff;transition:.3s var(--ease)}
+.hero-top .dot svg{width:15px;height:15px}
+.hero-top .dot:hover{background:#fff;color:#000}
+.hero-rating{display:flex;align-items:center;gap:12px;margin-top:30px;flex-wrap:wrap}
+.hero-rating .stars{display:flex;gap:2px}
+.hero-rating .stars svg{width:15px;height:15px;fill:#fff}
+.hero-rating span.txt{font-size:.82rem;color:rgba(255,255,255,.75)}
+
+/* ---- ticker ---- */
+.ticker{border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  padding:18px 0;overflow:hidden;margin-top:90px}
+.ticker-track{display:flex;width:max-content;gap:0;animation:tick 30s linear infinite}
+.ticker:hover .ticker-track{animation-play-state:paused}
+.ticker-track span{font-family:'Archivo';font-weight:800;text-transform:uppercase;
+  font-size:1.05rem;letter-spacing:.04em;color:var(--muted-2);
+  display:inline-flex;align-items:center;padding:0 34px}
+.ticker-track span::after{content:"";width:7px;height:7px;border-radius:50%;background:var(--muted-2);margin-left:34px}
+@keyframes tick{to{transform:translateX(-50%)}}
+
+/* ---- generic section ---- */
+.pad{padding:clamp(70px,11vw,140px) 0}
+.center-head{text-align:center;max-width:980px;margin:0 auto}
+.center-head h2{font-size:clamp(1.9rem,5vw,4rem)}
+.section-label{display:flex;align-items:center;gap:14px;margin-bottom:46px}
+.section-label .eyebrow{white-space:nowrap}
+.section-label .rule{flex:1;height:1px;background:var(--line)}
+
+/* ---- about / collective ---- */
+.collective h2{margin-bottom:60px}
+.collective h2 .dim{color:var(--muted-2)}
+.about-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:clamp(24px,5vw,70px);align-items:end}
+.about-text p{color:var(--muted);font-size:.98rem;font-weight:300;margin-bottom:18px;max-width:46ch}
+.about-text .btn{margin-top:14px}
+.about-media{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.fig{border-radius:18px;overflow:hidden;position:relative;background:var(--card)}
+.fig img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.05);
+  transition:filter .6s var(--ease),transform 1s var(--ease)}
+.fig:hover img{filter:grayscale(0) contrast(1);transform:scale(1.05)}
+.fig.tall{aspect-ratio:3/4;grid-row:span 2}
+.fig.short{aspect-ratio:4/3}
+.fig .cap{position:absolute;left:14px;bottom:12px;font-family:'Archivo';font-weight:600;
+  font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:#fff;z-index:2;
+  text-shadow:0 1px 8px rgba(0,0,0,.6)}
+body.lang-ka .fig .cap{font-family:'Noto Sans Georgian',sans-serif;letter-spacing:.06em;text-transform:none}
+
+/* ---- masters ---- */
+#masters{background:var(--bg-2)}
+.masters-head{display:flex;justify-content:space-between;align-items:flex-end;
+  flex-wrap:wrap;gap:20px;margin-bottom:50px}
+.masters-head h2{font-size:clamp(1.9rem,5vw,3.6rem)}
+.masters-head p{color:var(--muted);max-width:34ch;font-weight:300;font-size:.95rem}
+.masters{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.master{position:relative;border-radius:18px;overflow:hidden;background:var(--card);
+  aspect-ratio:3/4.2}
+.master img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  filter:grayscale(1) contrast(1.05) brightness(.92);transition:filter .6s var(--ease),transform 1s var(--ease)}
+.master:hover img{filter:grayscale(0) brightness(1);transform:scale(1.06)}
+.master::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 45%,rgba(0,0,0,.85))}
+.master-info{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:20px;
+  display:flex;justify-content:space-between;align-items:flex-end}
+.master-info h3{font-size:1.25rem;font-weight:800}
+.master-info .role{font-size:.66rem;letter-spacing:.16em;color:rgba(255,255,255,.7);
+  text-transform:uppercase;margin-top:4px;font-family:'Inter';font-weight:500}
+body.lang-ka .master-info .role{font-family:'Noto Sans Georgian',sans-serif;letter-spacing:.04em;text-transform:none}
+.master-book{font-family:'Archivo';font-weight:600;font-size:.66rem;letter-spacing:.12em;
+  text-transform:uppercase;display:inline-flex;align-items:center;gap:6px;color:#fff;
+  opacity:.85;transition:.3s}
+.master-book svg{width:12px;height:12px;transition:transform .3s var(--ease)}
+.master:hover .master-book{opacity:1}
+.master:hover .master-book svg{transform:translate(2px,-2px)}
+.master-badge{position:absolute;top:14px;left:14px;z-index:2;font-family:'Archivo';
+  font-weight:700;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+  padding:6px 11px;border-radius:50px;background:rgba(255,255,255,.92);color:#000}
+
+/* ---- pricing ---- */
+.pricing-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(30px,6vw,80px);align-items:start}
+.pricing-aside h2{font-size:clamp(2rem,5vw,4rem);margin-bottom:22px}
+.pricing-aside p{color:var(--muted);font-weight:300;font-size:.96rem;margin-bottom:28px;max-width:36ch}
+.price-list{display:flex;flex-direction:column}
+.price-row{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:baseline;
+  padding:26px 0;border-top:1px solid var(--line);transition:padding-left .35s var(--ease)}
+.price-row:last-child{border-bottom:1px solid var(--line)}
+.price-row:hover{padding-left:10px}
+.price-row h3{font-size:1.5rem;font-weight:700}
+.price-row p{grid-column:1/2;color:var(--muted);font-weight:300;font-size:.9rem;margin-top:8px;max-width:52ch}
+.price-row .amt{font-family:'Archivo';font-weight:700;font-size:1.6rem;white-space:nowrap}
+.price-row .amt small{font-size:.9rem;color:var(--muted)}
+.price-row .dur{grid-column:2;font-size:.72rem;color:var(--muted-2);text-align:right;letter-spacing:.08em;text-transform:uppercase;margin-top:6px}
+
+/* ---- reviews ---- */
+#reviews{background:var(--bg-2)}
+.rev-head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px;margin-bottom:46px}
+.rev-head .score{display:flex;align-items:baseline;gap:14px}
+.rev-head .score b{font-family:'Archivo';font-weight:900;font-size:3.4rem;line-height:1}
+.rev-head .score .stars{display:flex;gap:3px}
+.rev-head .score .stars svg{width:17px;height:17px;fill:var(--text)}
+.rev-head .score small{display:block;color:var(--muted);font-size:.8rem;margin-top:4px}
+.rev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.rev-card{border:1px solid var(--line);border-radius:18px;padding:30px;
+  transition:border-color .4s,transform .4s var(--ease);background:var(--card)}
+.rev-card:hover{border-color:var(--line-2);transform:translateY(-5px)}
+.rev-card .stars{display:flex;gap:2px;margin-bottom:16px}
+.rev-card .stars svg{width:14px;height:14px;fill:var(--text)}
+.rev-card p{font-size:.95rem;color:var(--text);font-weight:300;margin-bottom:22px}
+.rev-who{display:flex;align-items:center;gap:12px;border-top:1px solid var(--line);padding-top:18px}
+.rev-av{width:40px;height:40px;border-radius:50%;background:var(--card-2);border:1px solid var(--line-2);
+  display:grid;place-items:center;font-family:'Archivo';font-weight:700;font-size:1rem}
+.rev-who b{font-size:.9rem;font-weight:600}
+.rev-who small{display:block;color:var(--muted-2);font-size:.75rem}
+
+/* ---- visit ---- */
+.visit-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,60px);align-items:stretch}
+.visit-info h2{font-size:clamp(1.9rem,4.5vw,3.4rem);margin:16px 0 18px}
+.visit-info>.lead{margin-bottom:30px;max-width:42ch}
+.info-row{display:flex;gap:16px;padding:18px 0;border-top:1px solid var(--line)}
+.info-row .ic{flex:0 0 auto;width:42px;height:42px;border-radius:12px;border:1px solid var(--line-2);
+  display:grid;place-items:center}
+.info-row .ic svg{width:18px;height:18px}
+.info-row small{display:block;font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-2);margin-bottom:3px}
+.info-row a,.info-row span{font-size:1rem}
+.info-row a:hover{text-decoration:underline}
+.hours{margin-top:18px;border-top:1px solid var(--line);padding-top:18px}
+.hours .hr{display:flex;justify-content:space-between;padding:7px 0;font-size:.92rem;color:var(--muted)}
+.hours .hr.today{color:var(--text);font-weight:500}
+.hours .hr .now{font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--line-2);
+  border-radius:50px;padding:2px 10px;margin-left:10px}
+
+.book-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:clamp(26px,4vw,44px)}
+.book-card h3{font-size:1.5rem;margin-bottom:6px}
+.book-card .sub{color:var(--muted);font-size:.88rem;font-weight:300;margin-bottom:26px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.field input,.field select,.field textarea{width:100%;padding:14px 15px;border-radius:12px;
+  background:var(--bg-2);border:1px solid var(--line);color:var(--text);font-family:inherit;font-size:.95rem;
+  transition:border-color .3s,box-shadow .3s}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--text);
+  box-shadow:0 0 0 3px rgba(255,255,255,.08)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.book-card .btn{width:100%;justify-content:center;margin-top:6px}
+.form-note{font-size:.74rem;color:var(--muted-2);text-align:center;margin-top:14px}
+.form-ok{display:none;align-items:center;gap:10px;padding:14px;border-radius:12px;margin-top:14px;
+  background:rgba(255,255,255,.06);border:1px solid var(--line-2);font-size:.88rem}
+.form-ok svg{width:18px;height:18px;flex:0 0 auto}
+.map{margin-top:22px;border-radius:18px;overflow:hidden;border:1px solid var(--line);height:240px}
+.map iframe{width:100%;height:100%;border:0;filter:grayscale(1) invert(.92) contrast(.85)}
+
+/* ---- footer ---- */
+footer{border-top:1px solid var(--line);padding:70px 0 30px;background:var(--bg-2)}
+.foot-top{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:36px;margin-bottom:50px}
+.foot-brand img{width:60px;height:60px;border-radius:50%;border:1px solid var(--line-2);margin-bottom:16px}
+.foot-brand p{color:var(--muted);font-size:.9rem;font-weight:300;max-width:260px}
+.foot-col h4{font-size:.72rem;letter-spacing:.18em;color:var(--muted-2);margin-bottom:16px}
+.foot-col a,.foot-col p{display:block;color:var(--muted);font-size:.9rem;margin-bottom:11px;font-family:'Inter';font-weight:400;text-transform:none;letter-spacing:0;transition:color .3s}
+body.lang-ka .foot-col a,body.lang-ka .foot-col p,body.lang-ka .foot-brand p{font-family:'Noto Sans Georgian',sans-serif}
+.foot-col a:hover{color:var(--text)}
+.foot-bottom{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;
+  padding-top:24px;border-top:1px solid var(--line);color:var(--muted-2);font-size:.8rem}
+.foot-bottom .socials{display:flex;gap:10px}
+.foot-bottom .socials a{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);
+  display:grid;place-items:center;transition:.3s}
+.foot-bottom .socials a svg{width:16px;height:16px}
+.foot-bottom .socials a:hover{border-color:var(--text);background:rgba(255,255,255,.06)}
+
+/* ---- fab ---- */
+.fab{position:fixed;bottom:22px;right:22px;z-index:90}
+.fab a{width:56px;height:56px;border-radius:50%;background:var(--text);color:var(--bg);
+  display:grid;place-items:center;box-shadow:0 14px 30px -10px rgba(0,0,0,.7);transition:transform .3s var(--ease)}
+.fab a svg{width:24px;height:24px}
+.fab a:hover{transform:scale(1.08)}
+
+/* ---- reveal ---- */
+.reveal{opacity:0;transform:translateY(34px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+.reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}
+.reveal.d3{transition-delay:.24s}.reveal.d4{transition-delay:.32s}
+
+/* ---- responsive ---- */
+@media(max-width:980px){
+  .nav{grid-template-columns:auto 1fr auto}
+  .nav-left,.nav-hours{display:none}
+  .logo-mono{justify-self:start}
+  .burger{display:flex}
+  .nav-left.mobile{display:flex;position:fixed;inset:0;flex-direction:column;justify-content:center;
+    align-items:center;gap:26px;background:rgba(12,12,12,.97);backdrop-filter:blur(12px);z-index:110}
+  .nav-left.mobile a{font-family:'Archivo';font-weight:800;font-size:1.6rem;text-transform:uppercase;color:var(--text)}
+  body.lang-ka .nav-left.mobile a{font-family:'Noto Sans Georgian',sans-serif;text-transform:none}
+  .about-grid{grid-template-columns:1fr;gap:30px}
+  .masters{grid-template-columns:repeat(2,1fr)}
+  .pricing-grid{grid-template-columns:1fr}
+  .rev-grid{grid-template-columns:1fr}
+  .visit-grid{grid-template-columns:1fr}
+  .foot-top{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){
+  .hero-side{display:none}
+  .nav-right .btn-light{display:none}
+  .about-media{grid-template-columns:1fr 1fr}
+  .field-row{grid-template-columns:1fr}
+  .foot-top{grid-template-columns:1fr}
+  .price-row h3{font-size:1.25rem}
+}
+/* keep the hero title scaling down on narrow phones so long Georgian
+   words (e.g. „პროფესიონალური ბარბერშოპი") never clip — seamless at 548px */
+@media(max-width:548px){
+  .hero-inner .display{font-size:clamp(1.55rem,7vw,2.4rem)}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;scroll-behavior:auto!important}
+  .reveal{opacity:1;transform:none;transition:none}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header id="hdr">
+  <nav class="nav">
+    <div class="nav-left" id="navlinks">
+      <a href="#about" data-en="Our Shop" data-ka="ჩვენ შესახებ">Our Shop</a>
+      <a href="#masters" data-en="Our Team" data-ka="ჩვენი გუნდი">Our Team</a>
+      <a href="#pricing" data-en="Pricing" data-ka="ფასები">Pricing</a>
+      <a href="#visit" data-en="Booking" data-ka="ჯავშანი">Booking</a>
+    </div>
+    <a href="#top" class="logo-mono">
+      <img src="barbershop-logo.jpg" alt="Gentleman Barbershop logo" />
+      <b>GENTLEMAN</b>
+    </a>
+    <div class="nav-right">
+      <div class="nav-hours">
+        <small data-en="Open Daily" data-ka="ყოველდღე ღია">Open Daily</small>
+        <span>11:00 — 21:00</span>
+      </div>
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button class="lang-btn" data-lang="en">EN</button>
+        <button class="lang-btn" data-lang="ka">ქარ</button>
+      </div>
+      <a href="#visit" class="btn btn-light" data-en="Book Now" data-ka="დაჯავშნა">Book Now</a>
+      <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-card">
+    <img class="bg" src="img/hero.jpg" alt="Barber trimming a client's beard at Gentleman Barbershop" />
+    <div class="hero-side" data-en="Barbershop · Tbilisi" data-ka="ბარბერშოპი · თბილისი">Barbershop · Tbilisi</div>
+    <div class="hero-top">
+      <a href="https://facebook.com" target="_blank" rel="noopener" class="dot" aria-label="Facebook">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.5 9.87v-7H7.9V12h2.6V9.8c0-2.57 1.53-4 3.88-4 1.12 0 2.3.2 2.3.2v2.5h-1.3c-1.27 0-1.67.79-1.67 1.6V12h2.84l-.45 2.9h-2.39v7A10 10 0 0 0 22 12Z"/></svg>
+      </a>
+      <a href="tel:+995514400010" class="dot" aria-label="Call">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.69 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.33 1.85.56 2.81.69A2 2 0 0 1 22 16.92Z"/></svg>
+      </a>
+    </div>
+    <div class="hero-inner">
+      <p class="eyebrow reveal" data-en="— About Us" data-ka="— ჩვენ შესახებ">— About Us</p>
+      <h1 class="display reveal d1" data-en="Professional<br>Barbershop" data-ka="პროფესიონალური<br>ბარბერშოპი">Professional<br>Barbershop</h1>
+      <div class="reveal d2">
+        <a href="#visit" class="book-link">
+          <span data-en="Book Now" data-ka="დაჯავშნა">Book Now</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M7 7h10v10"/></svg>
+        </a>
+      </div>
+      <div class="hero-rating reveal d3">
+        <span class="stars" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+        </span>
+        <span class="txt" data-en="4.8 · 462 Google reviews" data-ka="4.8 · 462 შეფასება Google-ზე">4.8 · 462 Google reviews</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <span data-en="Haircuts" data-ka="შეჭრა">Haircuts</span><span data-en="Beard Sculpt" data-ka="წვერის მოვლა">Beard Sculpt</span><span data-en="Hot Towel Shave" data-ka="ცხელი პარსვა">Hot Towel Shave</span><span data-en="Skin Fades" data-ka="ფეიდი">Skin Fades</span><span data-en="Styling" data-ka="სტაილინგი">Styling</span><span data-en="Kids Cuts" data-ka="ბავშვის შეჭრა">Kids Cuts</span>
+    <span data-en="Haircuts" data-ka="შეჭრა">Haircuts</span><span data-en="Beard Sculpt" data-ka="წვერის მოვლა">Beard Sculpt</span><span data-en="Hot Towel Shave" data-ka="ცხელი პარსვა">Hot Towel Shave</span><span data-en="Skin Fades" data-ka="ფეიდი">Skin Fades</span><span data-en="Styling" data-ka="სტაილინგი">Styling</span><span data-en="Kids Cuts" data-ka="ბავშვის შეჭრა">Kids Cuts</span>
+  </div>
+</div>
+
+<!-- COLLECTIVE / ABOUT -->
+<section class="pad collective" id="about">
+  <div class="wrap">
+    <div class="center-head reveal">
+      <h2 data-en="A Gentlemen's Collective<br><span class=&quot;dim&quot;>and Premium Services.</span>" data-ka="ჯენტლმენების კოლექტივი<br><span class=&quot;dim&quot;>და პრემიუმ მომსახურება.</span>">A Gentlemen's Collective<br><span class="dim">and Premium Services.</span></h2>
+    </div>
+    <div class="about-grid" style="margin-top:70px">
+      <div class="about-text reveal">
+        <p data-en="More than a barbershop — a collective. We provide high-quality grooming with barbers who care: precision haircuts, beard sculpting and clean razor work for the modern gentleman." data-ka="უბრალოდ ბარბერშოპზე მეტი — ეს კოლექტივია. ჩვენ გთავაზობთ მაღალი ხარისხის მოვლას ბარბერებისგან, რომლებსაც ნამდვილად აქვთ ზრუნვა: ზუსტი შეჭრა, წვერის ფორმირება და სუფთა სამართებლის ხელწერა თანამედროვე ჯენტლმენისთვის.">More than a barbershop — a collective. We provide high-quality grooming with barbers who care: precision haircuts, beard sculpting and clean razor work for the modern gentleman.</p>
+        <p data-en="We listen first, then cut to suit you. Whether it's a sharp fade or a full beard reshape, our masters give you exactly what you ask for — every single visit. That consistency is why our clients keep coming back." data-ka="ჯერ მოგისმენთ, შემდეგ კი შეგჭრით ისე, როგორც გინდათ. სუფთა ფეიდი იქნება თუ წვერის სრული გარდაქმნა — ჩვენი ოსტატები ზუსტად იმას გააკეთებენ, რასაც სთხოვთ. ყოველ ვიზიტზე. სწორედ ამიტომ ბრუნდებიან ჩვენი კლიენტები.">We listen first, then cut to suit you. Whether it's a sharp fade or a full beard reshape, our masters give you exactly what you ask for — every single visit. That consistency is why our clients keep coming back.</p>
+        <a href="#pricing" class="btn btn-out">
+          <span data-en="View Pricing" data-ka="ფასების ნახვა">View Pricing</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+      <div class="about-media reveal d1">
+        <div class="fig tall"><img src="img/shop.jpg" alt="Detailed razor line-up on a fade" /><span class="cap" data-en="The Craft" data-ka="ხელოვნება">The Craft</span></div>
+        <div class="fig short"><img src="img/m1.jpg" alt="Interior of the barbershop" /><span class="cap" data-en="The Shop" data-ka="სალონი">The Shop</span></div>
+        <div class="fig short"><img src="img/m2.jpg" alt="Precision haircut in progress" /><span class="cap" data-en="The Cut" data-ka="შეჭრა">The Cut</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MASTERS -->
+<section class="pad" id="masters">
+  <div class="wrap">
+    <div class="masters-head reveal">
+      <h2 data-en="Meet<br>Our Masters" data-ka="გაიცანი<br>ჩვენი ოსტატები">Meet<br>Our Masters</h2>
+      <p data-en="Our team has years of professional experience — the names our clients ask for by heart." data-ka="ჩვენს გუნდს აქვს მრავალწლიანი პროფესიული გამოცდილება — სახელები, რომლებსაც კლიენტები ზეპირად ითხოვენ.">Our team has years of professional experience — the names our clients ask for by heart.</p>
+    </div>
+    <div class="masters">
+
+      <article class="master reveal">
+        <span class="master-badge" data-en="Top Rated" data-ka="საუკეთესო">Top Rated</span>
+        <img src="img/p2.jpg" alt="Rauli, master barber" />
+        <div class="master-info">
+          <div><h3>Rauli</h3><div class="role" data-en="Master Barber" data-ka="მთავარი ბარბერი">Master Barber</div></div>
+          <a href="#visit" class="master-book"><span data-en="Book" data-ka="ჯავშანი">Book</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+        </div>
+      </article>
+
+      <article class="master reveal d1">
+        <img src="img/svc.jpg" alt="Nabi, barber and stylist" />
+        <div class="master-info">
+          <div><h3>Nabi</h3><div class="role" data-en="Barber &amp; Stylist" data-ka="ბარბერი და სტილისტი">Barber &amp; Stylist</div></div>
+          <a href="#visit" class="master-book"><span data-en="Book" data-ka="ჯავშანი">Book</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+        </div>
+      </article>
+
+      <article class="master reveal d2">
+        <img src="img/m3.jpg" alt="Tazo, senior barber" />
+        <div class="master-info">
+          <div><h3>Tazo</h3><div class="role" data-en="Senior Barber" data-ka="უფროსი ბარბერი">Senior Barber</div></div>
+          <a href="#visit" class="master-book"><span data-en="Book" data-ka="ჯავშანი">Book</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+        </div>
+      </article>
+
+      <article class="master reveal d3">
+        <img src="img/p6.jpg" alt="Khatia, master stylist" />
+        <div class="master-info">
+          <div><h3>Khatia</h3><div class="role" data-en="Master Stylist" data-ka="მთავარი სტილისტი">Master Stylist</div></div>
+          <a href="#visit" class="master-book"><span data-en="Book" data-ka="ჯავშანი">Book</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pad" id="pricing">
+  <div class="wrap">
+    <div class="pricing-grid">
+      <aside class="pricing-aside reveal">
+        <span class="eyebrow" data-en="— The Menu" data-ka="— მენიუ">— The Menu</span>
+        <h2 style="margin-top:14px" data-en="Pricing" data-ka="ფასები">Pricing</h2>
+        <p data-en="Honest pricing for premium work. Prices shown in Georgian Lari — final price confirmed in-chair." data-ka="გულახდილი ფასები პრემიუმ ხარისხზე. ფასები მოცემულია ლარში — საბოლოო ფასი დგინდება ადგილზე.">Honest pricing for premium work. Prices shown in Georgian Lari — final price confirmed in-chair.</p>
+        <a href="#visit" class="btn btn-light">
+          <span data-en="Book a Chair" data-ka="დაჯავშნა">Book a Chair</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      </aside>
+      <div class="price-list reveal d1">
+        <div class="price-row">
+          <h3 data-en="Haircut" data-ka="შეჭრა">Haircut</h3>
+          <div class="amt">40<small> ₾</small></div>
+          <p data-en="Consultation, precision cut, wash and a finished style tailored to your face shape." data-ka="კონსულტაცია, ზუსტი შეჭრა, დაბანა და დასრულებული სტილი თქვენი სახის ფორმის მიხედვით.">Consultation, precision cut, wash and a finished style tailored to your face shape.</p>
+          <div class="dur" data-en="≈ 45 min" data-ka="≈ 45 წთ">≈ 45 min</div>
+        </div>
+        <div class="price-row">
+          <h3 data-en="Beard &amp; Moustache" data-ka="წვერი და ულვაში">Beard &amp; Moustache</h3>
+          <div class="amt">25<small> ₾</small></div>
+          <p data-en="Shape-up, line detailing and conditioning with razor-clean edges." data-ka="ფორმირება, კონტურის დამუშავება და მოვლა სამართებლით სუფთა ხაზებით.">Shape-up, line detailing and conditioning with razor-clean edges.</p>
+          <div class="dur" data-en="≈ 30 min" data-ka="≈ 30 წთ">≈ 30 min</div>
+        </div>
+        <div class="price-row">
+          <h3 data-en="Hot Towel Shave" data-ka="ცხელი პირსახოცით პარსვა">Hot Towel Shave</h3>
+          <div class="amt">35<small> ₾</small></div>
+          <p data-en="The full ritual — hot towels, rich lather and a smooth straight-razor finish." data-ka="სრული რიტუალი — ცხელი პირსახოცები, მკვრივი ქაფი და გლუვი პარსვა სამართებლით.">The full ritual — hot towels, rich lather and a smooth straight-razor finish.</p>
+          <div class="dur" data-en="≈ 40 min" data-ka="≈ 40 წთ">≈ 40 min</div>
+        </div>
+        <div class="price-row">
+          <h3 data-en="Cut &amp; Beard Package" data-ka="შეჭრა და წვერის პაკეტი">Cut &amp; Beard Package</h3>
+          <div class="amt">60<small> ₾</small></div>
+          <p data-en="The complete gentleman — full haircut paired with a beard sculpt." data-ka="სრული ჯენტლმენი — შეჭრა წვერის ფორმირებასთან ერთად.">The complete gentleman — full haircut paired with a beard sculpt.</p>
+          <div class="dur" data-en="≈ 70 min" data-ka="≈ 70 წთ">≈ 70 min</div>
+        </div>
+        <div class="price-row">
+          <h3 data-en="Kids Haircut" data-ka="ბავშვის შეჭრა">Kids Haircut</h3>
+          <div class="amt">25<small> ₾</small></div>
+          <p data-en="Patient, friendly cuts for the little gentlemen, 12 and under." data-ka="მოთმინებიანი, მეგობრული შეჭრა პატარა ჯენტლმენებისთვის — 12 წლამდე.">Patient, friendly cuts for the little gentlemen, 12 and under.</p>
+          <div class="dur" data-en="≈ 30 min" data-ka="≈ 30 წთ">≈ 30 min</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="pad" id="reviews">
+  <div class="wrap">
+    <div class="rev-head reveal">
+      <div class="section-label" style="margin:0;flex:1">
+        <span class="eyebrow" data-en="Word on the Street" data-ka="რას ამბობენ">Word on the Street</span><span class="rule"></span>
+      </div>
+      <div class="score">
+        <b>4.8</b>
+        <div>
+          <div class="stars" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+          </div>
+          <small data-en="462 Google reviews" data-ka="462 შეფასება Google-ზე">462 Google reviews</small>
+        </div>
+      </div>
+    </div>
+    <div class="rev-grid">
+      <article class="rev-card reveal">
+        <div class="stars" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+        </div>
+        <p data-en="I went to get my haircut with Nabi and came out very happy. From the first moment he was super friendly and easygoing — one of those professionals who makes you feel comfortable as soon as you sit down." data-ka="ნაბისთან მივედი თმის შესაჭრელად და ძალიან კმაყოფილი გამოვედი. პირველივე წუთიდან ძალიან მეგობრული და თავისუფალი იყო — ერთ-ერთი იმ პროფესიონალთაგანი, ვინც დაჯდომისთანავე კომფორტს გაგრძნობინებს.">I went to get my haircut with Nabi and came out very happy. From the first moment he was super friendly and easygoing — one of those professionals who makes you feel comfortable as soon as you sit down.</p>
+        <div class="rev-who"><div class="rev-av">G</div><div><b>Gabriel Vidal</b><small data-en="Local Guide · with Nabi" data-ka="Local Guide · ნაბისთან">Local Guide · with Nabi</small></div></div>
+      </article>
+      <article class="rev-card reveal d1">
+        <div class="stars" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+        </div>
+        <p data-en="One of the best barbershops around, and Tazo is the reason I keep coming back. Every visit is consistent — the cuts are always clean, sharp and exactly what I ask for. Highly recommended." data-ka="ერთ-ერთი საუკეთესო ბარბერშოპია და თაზო არის მიზეზი, რის გამოც ვბრუნდები. ყოველი ვიზიტი თანმიმდევრულია — შეჭრა ყოველთვის სუფთა, ზუსტი და ისეთია, როგორსაც ვითხოვ. ნამდვილად გირჩევთ.">One of the best barbershops around, and Tazo is the reason I keep coming back. Every visit is consistent — the cuts are always clean, sharp and exactly what I ask for. Highly recommended.</p>
+        <div class="rev-who"><div class="rev-av">E</div><div><b>Elguja Khintibidze</b><small data-en="Local Guide · with Tazo" data-ka="Local Guide · თაზოსთან">Local Guide · with Tazo</small></div></div>
+      </article>
+      <article class="rev-card reveal d2">
+        <div class="stars" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+        </div>
+        <p data-en="Khatia is the master of her job — dedicated, with a tailored approach that's top notch. Lovely staff and a great atmosphere in the salon." data-ka="ხატია თავისი საქმის ოსტატია — თავდადებული, ინდივიდუალური მიდგომით, რომელიც უმაღლეს დონეზეა. სასიამოვნო პერსონალი და შესანიშნავი ატმოსფერო სალონში.">Khatia is the master of her job — dedicated, with a tailored approach that's top notch. Lovely staff and a great atmosphere in the salon.</p>
+        <div class="rev-who"><div class="rev-av">G</div><div><b>Gela Esartia</b><small data-en="10 reviews · with Khatia" data-ka="10 შეფასება · ხატიასთან">10 reviews · with Khatia</small></div></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- VISIT -->
+<section class="pad" id="visit">
+  <div class="wrap">
+    <div class="visit-grid">
+      <div class="visit-info reveal">
+        <span class="eyebrow" data-en="— Find Us" data-ka="— მოგვძებნე">— Find Us</span>
+        <h2 data-en="Visit the Shop" data-ka="ეწვიე სალონს">Visit the Shop</h2>
+        <p class="lead" data-en="Reserve your chair or simply walk in. In the heart of Tbilisi — easy to find, hard to leave." data-ka="დაჯავშნე ადგილი ან უბრალოდ შემოგვიარე. თბილისის ცენტრში — ადვილი მოსაძებნი, ძნელი დასატოვებელი.">Reserve your chair or simply walk in. In the heart of Tbilisi — easy to find, hard to leave.</p>
+
+        <div class="info-row">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg></span>
+          <div><small data-en="Address" data-ka="მისამართი">Address</small><a href="https://www.google.com/maps/search/?api=1&query=13+Bidzina+Kvernadze+St+Tbilisi" target="_blank" rel="noopener" data-en="13 Bidzina Kvernadze St, Tbilisi" data-ka="ბიძინა კვერნაძის ქ. 13, თბილისი">13 Bidzina Kvernadze St, Tbilisi</a></div>
+        </div>
+        <div class="info-row">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.69 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.33 1.85.56 2.81.69A2 2 0 0 1 22 16.92Z"/></svg></span>
+          <div><small data-en="Phone" data-ka="ტელეფონი">Phone</small><a href="tel:+995514400010">+995 514 40 00 10</a></div>
+        </div>
+
+        <div class="hours" id="hours">
+          <div class="hr"><span data-en="Monday — Friday" data-ka="ორშაბათი — პარასკევი">Monday — Friday</span><span class="time">11:00 — 20:00</span></div>
+          <div class="hr"><span data-en="Saturday" data-ka="შაბათი">Saturday</span><span class="time">11:00 — 20:00</span></div>
+          <div class="hr"><span data-en="Sunday" data-ka="კვირა">Sunday</span><span class="time">11:00 — 20:00</span></div>
+        </div>
+
+        <div class="map">
+          <iframe title="Gentleman Barbershop location" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+            src="https://www.google.com/maps?q=13%20Bidzina%20Kvernadze%20St%20Tbilisi&output=embed"></iframe>
+        </div>
+      </div>
+
+      <div class="book-card reveal d1">
+        <h3 data-en="Book an Appointment" data-ka="ჯავშნის გაკეთება">Book an Appointment</h3>
+        <p class="sub" data-en="Pick a service, barber and time — instant confirmation." data-ka="აირჩიე სერვისი, ბარბერი და დრო — მყისიერი დადასტურება.">Pick a service, barber and time — instant confirmation.</p>
+        <form id="bookForm" novalidate>
+          <div id="editBanner" class="edit-banner" style="display:none">
+            <span data-en="Editing your booking — name &amp; phone stay the same." data-ka="ჯავშნის რედაქტირება — სახელი და ნომერი უცვლელია.">Editing your booking — name &amp; phone stay the same.</span>
+            <button type="button" id="editCancel" data-en="Cancel" data-ka="გაუქმება">Cancel</button>
+          </div>
+          <div class="field-row">
+            <div class="field"><label for="bk-service" data-en="Service *" data-ka="სერვისი *">Service *</label>
+              <select id="bk-service" required></select>
+            </div>
+            <div class="field"><label for="bk-barber" data-en="Barber *" data-ka="ბარბერი *">Barber *</label>
+              <select id="bk-barber" required></select>
+            </div>
+          </div>
+          <div class="field"><label data-en="Pick a date *" data-ka="აირჩიე თარიღი *">Pick a date *</label>
+            <div class="cal" id="bk-cal">
+              <div class="cal-head">
+                <button type="button" class="cal-nav" id="cal-prev" aria-label="Previous month">&#8249;</button>
+                <span class="cal-title" id="cal-title"></span>
+                <button type="button" class="cal-nav" id="cal-next" aria-label="Next month">&#8250;</button>
+              </div>
+              <div class="cal-grid" id="cal-grid"></div>
+            </div>
+          </div>
+          <div class="field"><label data-en="Available times *" data-ka="თავისუფალი დრო *">Available times *</label>
+            <div id="bk-slots" class="slots"><p class="slots-hint" data-en="Choose a service, barber and date." data-ka="აირჩიე სერვისი, ბარბერი და თარიღი.">Choose a service, barber and date.</p></div>
+          </div>
+          <div class="field-row" id="nameRow">
+            <div class="field"><label for="bk-name" data-en="Name *" data-ka="სახელი *">Name *</label><input id="bk-name" type="text" autocomplete="name" placeholder="Your name" data-en-ph="Your name" data-ka-ph="თქვენი სახელი" /></div>
+            <div class="field"><label for="bk-phone" data-en="Phone *" data-ka="ტელეფონი *">Phone *</label><input id="bk-phone" type="tel" autocomplete="tel" placeholder="+995 ..." /></div>
+          </div>
+          <button type="submit" class="btn btn-light">
+            <span class="btn-label" data-en="Confirm Booking" data-ka="ჯავშნის დადასტურება">Confirm Booking</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+          <div class="form-ok" id="formOk">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+            <span id="okText" data-en="Booked! See you soon." data-ka="დაჯავშნილია! მალე გნახავთ.">Booked! See you soon.</span>
+          </div>
+          <p class="form-err" id="formErr"></p>
+          <p class="form-note"><span data-en="Prefer to talk? Call" data-ka="გირჩევნიათ დარეკვა? დარეკეთ">Prefer to talk? Call</span> <a href="tel:+995514400010" style="text-decoration:underline">514 40 00 10</a></p>
+          <p class="form-note" style="margin-top:10px"><button type="button" id="manageLink" class="manage-link" data-en="Manage my booking" data-ka="ჩემი ჯავშნის მართვა">Manage my booking</button></p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <img src="barbershop-logo.jpg" alt="Gentleman Barbershop logo" />
+        <p data-en="A gentlemen's collective and premium grooming services in the heart of Tbilisi." data-ka="ჯენტლმენების კოლექტივი და პრემიუმ მომსახურება თბილისის ცენტრში.">A gentlemen's collective and premium grooming services in the heart of Tbilisi.</p>
+      </div>
+      <div class="foot-col">
+        <h4 data-en="Explore" data-ka="ნავიგაცია">Explore</h4>
+        <a href="#about" data-en="Our Shop" data-ka="ჩვენ შესახებ">Our Shop</a>
+        <a href="#masters" data-en="Our Team" data-ka="ჩვენი გუნდი">Our Team</a>
+        <a href="#pricing" data-en="Pricing" data-ka="ფასები">Pricing</a>
+        <a href="#reviews" data-en="Reviews" data-ka="შეფასებები">Reviews</a>
+        <a href="#visit" data-en="Booking" data-ka="ჯავშანი">Booking</a>
+      </div>
+      <div class="foot-col">
+        <h4 data-en="Visit" data-ka="მისამართი">Visit</h4>
+        <p data-en="13 Bidzina Kvernadze St" data-ka="ბიძინა კვერნაძის ქ. 13">13 Bidzina Kvernadze St</p>
+        <p data-en="Tbilisi, Georgia" data-ka="თბილისი, საქართველო">Tbilisi, Georgia</p>
+        <p>Plus code: PQ9J+P7</p>
+        <a href="tel:+995514400010">514 40 00 10</a>
+      </div>
+      <div class="foot-col">
+        <h4 data-en="Hours" data-ka="სამუშაო საათები">Hours</h4>
+        <p data-en="Every day · 11:00 – 20:00" data-ka="ყოველდღე · 11:00 – 20:00">Every day · 11:00 – 20:00</p>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span id="year"></span> Gentleman Barbershop Tbilisi</span>
+      <div class="socials">
+        <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.5 9.87v-7H7.9V12h2.6V9.8c0-2.57 1.53-4 3.88-4 1.12 0 2.3.2 2.3.2v2.5h-1.3c-1.27 0-1.67.79-1.67 1.6V12h2.84l-.45 2.9h-2.39v7A10 10 0 0 0 22 12Z"/></svg></a>
+        <a href="tel:+995514400010" aria-label="Call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.69 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.33 1.85.56 2.81.69A2 2 0 0 1 22 16.92Z"/></svg></a>
+        <a href="https://www.google.com/maps/search/?api=1&query=13+Bidzina+Kvernadze+St+Tbilisi" target="_blank" rel="noopener" aria-label="Map"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- MANAGE BOOKING MODAL -->
+<div class="manage-pop" id="managePop" role="dialog" aria-modal="true">
+  <div class="manage-card">
+    <div class="manage-head">
+      <h3 data-en="My Booking" data-ka="ჩემი ჯავშანი">My Booking</h3>
+      <button class="manage-x" id="manageClose" aria-label="Close">&times;</button>
+    </div>
+    <div id="manageBody"></div>
+  </div>
+</div>
+
+<!-- BOOKING SUCCESS POPUP -->
+<div class="booked-pop" id="bookedPop" role="alert" aria-live="assertive"
+     onclick="if(event.target===this)this.classList.remove('show')">
+  <div class="booked-card">
+    <button class="booked-x" type="button" aria-label="Close"
+            onclick="document.getElementById('bookedPop').classList.remove('show')">&times;</button>
+    <div class="booked-check" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+    </div>
+    <h3 class="booked-title" data-en="Booking Confirmed!" data-ka="შეკვეთა გაფორმდა!">Booking Confirmed!</h3>
+  </div>
+</div>
+
+<div class="fab">
+  <a href="#visit" aria-label="Book now">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/></svg>
+  </a>
+</div>
+
+<style>
+/* booking slot picker */
+.slots{display:flex;flex-wrap:wrap;gap:8px;min-height:44px;align-items:flex-start}
+.slots-hint{color:var(--muted-2);font-size:.85rem;font-weight:300;padding:11px 0}
+.slot{padding:9px 14px;border:1px solid var(--line-2);border-radius:10px;
+  font-family:'Archivo';font-weight:600;font-size:.82rem;letter-spacing:.02em;transition:.2s var(--ease);
+  animation:slotIn .32s var(--ease) backwards;animation-delay:calc(var(--i,0)*32ms)}
+.slot:hover{border-color:var(--text);transform:translateY(-2px);box-shadow:0 8px 18px -12px rgba(255,255,255,.4)}
+.slot:active{transform:translateY(0) scale(.97)}
+.slot.sel{background:var(--text);color:var(--bg);border-color:var(--text)}
+@keyframes slotIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+
+/* ===== custom select (service / barber) ===== */
+.csel{position:relative}
+.csel-native{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.csel-trigger{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  min-height:48px;padding:13px 15px;border-radius:12px;background:var(--bg-2);border:1px solid var(--line);
+  color:var(--text);font-family:inherit;font-size:.95rem;text-align:left;
+  transition:border-color .25s var(--ease),box-shadow .25s var(--ease)}
+.csel-trigger:hover{border-color:var(--line-2)}
+.csel.open .csel-trigger,.csel-trigger:focus-visible{outline:none;border-color:var(--text);
+  box-shadow:0 0 0 3px rgba(255,255,255,.08)}
+.csel-value{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.csel-value.placeholder{color:var(--muted-2)}
+.csel-chev{width:16px;height:16px;flex:0 0 auto;color:var(--muted);
+  transition:transform .3s var(--ease),color .25s}
+.csel.open .csel-chev{transform:rotate(180deg);color:var(--text)}
+.csel-panel{position:absolute;left:0;right:0;top:calc(100% + 8px);z-index:60;
+  background:var(--card-2);border:1px solid var(--line-2);border-radius:14px;padding:6px;
+  max-height:288px;overflow-y:auto;box-shadow:0 24px 54px -18px rgba(0,0,0,.85);
+  transform-origin:top center;opacity:0;transform:translateY(-8px) scale(.97);
+  visibility:hidden;pointer-events:none;
+  transition:opacity .14s var(--ease),transform .14s var(--ease),visibility .14s}
+.csel.open .csel-panel{opacity:1;transform:none;visibility:visible;pointer-events:auto;
+  transition:opacity .2s var(--ease),transform .22s var(--ease)}
+.csel-opt{width:100%;display:flex;align-items:center;gap:10px;min-height:44px;padding:11px 12px;
+  border-radius:9px;font-family:inherit;font-size:.92rem;color:var(--text);text-align:left;cursor:pointer;
+  transition:background .15s var(--ease)}
+.csel-opt:hover,.csel-opt.active{background:rgba(255,255,255,.08)}
+.csel-opt.sel{background:rgba(255,255,255,.05)}
+.csel-opt>span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.csel-opt .tick{margin-left:auto;width:16px;height:16px;flex:0 0 auto;opacity:0;transition:opacity .15s}
+.csel-opt.sel .tick{opacity:1}
+.csel-panel::-webkit-scrollbar{width:8px}
+.csel-panel::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:8px}
+.csel-panel::-webkit-scrollbar-track{background:transparent}
+body.lang-ka .csel-trigger,body.lang-ka .csel-opt{font-family:'Noto Sans Georgian',sans-serif}
+@media(prefers-reduced-motion:reduce){
+  .csel-panel,.csel-chev,.csel-opt{transition:none!important}
+}
+.form-err{color:#e5484d;font-size:.85rem;margin-top:10px;display:none}
+/* booking calendar */
+.cal{border:1px solid var(--line);border-radius:16px;padding:14px 16px;background:var(--card-2)}
+.cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.cal-title{font-family:'Archivo';font-weight:700;font-size:.95rem;letter-spacing:.02em}
+body.lang-ka .cal-title{font-family:'Noto Sans Georgian',sans-serif}
+.cal-nav{width:30px;height:30px;border-radius:9px;border:1px solid var(--line-2);display:flex;
+  align-items:center;justify-content:center;font-size:1.15rem;line-height:1;color:var(--muted);transition:.2s}
+.cal-nav:hover:not(:disabled){border-color:var(--text);color:var(--text)}
+.cal-nav:disabled{opacity:.3;cursor:default}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal-dow{height:24px;display:flex;align-items:center;justify-content:center;font-size:.6rem;
+  letter-spacing:.08em;color:var(--muted-2);font-family:'Archivo';font-weight:700}
+.cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:11px;
+  font-family:'Archivo';font-weight:600;font-size:.85rem;color:var(--text);transition:.15s;cursor:pointer}
+.cal-day.empty{cursor:default}
+.cal-day:not(.off):not(.empty):hover{background:rgba(255,255,255,.09)}
+.cal-day.off{color:var(--muted-2);opacity:.3;cursor:default}
+.cal-day.today:not(.sel){box-shadow:inset 0 0 0 1px var(--line-2)}
+.cal-day.sel{background:var(--text);color:var(--bg)}
+
+/* ===== booking success popup ===== */
+.booked-pop{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;
+  padding:20px;background:rgba(0,0,0,.62);backdrop-filter:blur(5px)}
+.booked-pop.show{display:flex;animation:bpFade .3s var(--ease)}
+.booked-card{position:relative;background:var(--card);border:1px solid rgba(63,185,80,.4);border-radius:24px;
+  padding:clamp(32px,6vw,54px) clamp(26px,5vw,46px);text-align:center;max-width:440px;width:100%;
+  box-shadow:0 30px 90px -20px rgba(0,0,0,.85),0 0 0 1px rgba(63,185,80,.08);
+  animation:bpPop .5s cubic-bezier(.22,1.15,.36,1)}
+.booked-check{width:88px;height:88px;border-radius:50%;margin:0 auto 24px;display:grid;place-items:center;
+  background:rgba(63,185,80,.14);border:2px solid rgba(63,185,80,.5)}
+.booked-check svg{width:46px;height:46px;stroke:#3fb950;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:48;stroke-dashoffset:48;animation:bpCheck .55s .28s var(--ease) forwards}
+.booked-title{color:#3fb950;font-size:clamp(1.7rem,5.5vw,2.5rem);margin-bottom:12px;line-height:1.1}
+.booked-sub{color:var(--muted);font-size:1.02rem;font-weight:300}
+.booked-x{position:absolute;top:14px;right:16px;width:34px;height:34px;border-radius:9px;font-size:1.5rem;line-height:1;
+  color:var(--muted-2);transition:color .2s}
+.booked-x:hover{color:var(--text)}
+@keyframes bpFade{from{opacity:0}to{opacity:1}}
+@keyframes bpPop{from{opacity:0;transform:translateY(26px) scale(.9)}to{opacity:1;transform:none}}
+@keyframes bpCheck{to{stroke-dashoffset:0}}
+@media(prefers-reduced-motion:reduce){.booked-check svg{stroke-dashoffset:0!important;animation:none!important}}
+
+/* ===== manage booking ===== */
+.manage-link{font-family:'Archivo';font-weight:600;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--muted);border-bottom:1px solid var(--line-2);padding-bottom:2px;transition:color .2s,border-color .2s;cursor:pointer}
+.manage-link:hover{color:var(--text);border-color:var(--text)}
+body.lang-ka .manage-link{font-family:'Noto Sans Georgian',sans-serif;letter-spacing:.02em;text-transform:none}
+.manage-pop{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:20px;
+  background:rgba(0,0,0,.62);backdrop-filter:blur(5px)}
+.manage-pop.show{display:flex;animation:bpFade .3s var(--ease)}
+.manage-card{background:var(--card);border:1px solid var(--line-2);border-radius:20px;width:100%;max-width:440px;
+  max-height:88vh;overflow:auto;padding:24px;animation:bpPop .4s var(--ease)}
+.manage-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.manage-head h3{font-size:1.3rem}
+.manage-x{font-size:1.8rem;line-height:1;color:var(--muted);width:34px;height:34px;border-radius:9px;transition:color .2s}
+.manage-x:hover{color:var(--text)}
+.mng-item{border:1px solid var(--line);border-radius:14px;padding:15px 16px;margin-bottom:12px;background:var(--card-2)}
+.mng-h{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.mng-h b{font-family:'Archivo';font-weight:700;font-size:1.02rem}
+body.lang-ka .mng-h b{font-family:'Noto Sans Georgian',sans-serif}
+.mng-status{font-size:.66rem;font-weight:700;padding:3px 9px;border-radius:7px;white-space:nowrap;font-family:'Archivo'}
+.mng-status.s-confirmed{background:rgba(99,102,241,.18);color:#c8caf6}
+.mng-status.s-done{background:rgba(63,185,80,.16);color:#9fe0a8}
+.mng-status.s-cancelled{background:rgba(229,72,77,.16);color:#e5747a}
+.mng-meta{color:var(--muted);font-size:.88rem;margin-top:6px}
+.mng-acts{display:flex;gap:8px;margin-top:14px}
+.mng-btn{flex:1;padding:11px;border:1px solid var(--line-2);border-radius:10px;font-family:'Archivo';font-weight:600;
+  font-size:.82rem;color:var(--text);transition:.18s;cursor:pointer}
+body.lang-ka .mng-btn{font-family:'Noto Sans Georgian',sans-serif}
+.mng-btn:hover{border-color:var(--text);transform:translateY(-1px)}
+.mng-btn.danger{color:#e5747a;border-color:rgba(229,72,77,.4)}
+.mng-btn.danger:hover{border-color:#e5484d;background:rgba(229,72,77,.1)}
+.mng-none{color:var(--muted-2);font-size:.9rem;text-align:center;padding:14px 0}
+.mng-code{margin-top:8px;border-top:1px solid var(--line);padding-top:16px}
+.mng-code label,.mng-lbl{display:block;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+body.lang-ka .mng-code label,body.lang-ka .mng-lbl{letter-spacing:.02em;text-transform:none}
+.mng-code-row{display:flex;gap:8px}
+.mng-code-row input,#rsDate{width:100%;padding:12px 14px;border-radius:11px;background:var(--bg-2);border:1px solid var(--line);
+  color:var(--text);font-family:inherit;font-size:.92rem}
+.mng-code-row input{flex:1}
+.mng-code-row input:focus,#rsDate:focus{outline:none;border-color:var(--text)}
+.mng-code-row .mng-btn{flex:0 0 auto;padding:11px 16px}
+.mng-back{font-family:'Archivo';font-weight:600;font-size:.8rem;color:var(--muted);cursor:pointer;transition:color .2s}
+.mng-back:hover{color:var(--text)}
+.mng-confirm{width:100%;margin-top:16px;padding:14px;border-radius:12px;background:var(--text);color:var(--bg);
+  font-family:'Archivo';font-weight:700;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;transition:.2s;cursor:pointer}
+body.lang-ka .mng-confirm{font-family:'Noto Sans Georgian',sans-serif;letter-spacing:.02em;text-transform:none}
+.mng-confirm:disabled{opacity:.4;cursor:default}
+.mng-code-show{display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);
+  font-size:.72rem;color:var(--muted-2)}
+.mng-code-show span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:monospace;color:var(--muted)}
+.mng-copy{font-family:'Archivo';font-weight:600;font-size:.7rem;color:var(--muted);border:1px solid var(--line-2);
+  border-radius:7px;padding:4px 9px;cursor:pointer;transition:.18s;white-space:nowrap}
+.mng-copy:hover{color:var(--text);border-color:var(--text)}
+body.lang-ka .mng-copy{font-family:'Noto Sans Georgian',sans-serif}
+.edit-banner{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;
+  padding:12px 14px;border-radius:12px;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.35)}
+.edit-banner span{font-size:.86rem;color:#c8caf6}
+.edit-banner button{flex:0 0 auto;font-family:'Archivo';font-weight:600;font-size:.74rem;letter-spacing:.06em;
+  text-transform:uppercase;color:#c8caf6;border:1px solid rgba(99,102,241,.5);border-radius:8px;padding:6px 12px;transition:.2s}
+.edit-banner button:hover{background:rgba(99,102,241,.2);color:#fff}
+body.lang-ka .edit-banner button{font-family:'Noto Sans Georgian',sans-serif;letter-spacing:.02em;text-transform:none}
+</style>
+<script src="js/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+const hdr = document.getElementById('hdr');
+const onScroll = () => hdr.classList.toggle('scrolled', window.scrollY > 30);
+onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
+
+const burger = document.getElementById('burger');
+const navlinks = document.getElementById('navlinks');
+burger.addEventListener('click', () => {
+  const open = navlinks.classList.toggle('mobile');
+  burger.classList.toggle('open', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+});
+navlinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  navlinks.classList.remove('mobile'); burger.classList.remove('open'); document.body.style.overflow = '';
+}));
+
+/* ===== fast, smooth in-page navigation (fixed-header offset, snappy easing) ===== */
+(function(){
+  const reduceMo = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const easeOutCubic = p => 1 - Math.pow(1 - p, 3);
+  let active = false;
+  function smoothScrollTo(el){
+    const offset = (hdr ? hdr.offsetHeight : 0) + 6;
+    const startY = window.pageYOffset;
+    const destY = Math.max(0, el.getBoundingClientRect().top + startY - offset);
+    if (reduceMo){ window.scrollTo(0, destY); return; }
+    const dist = destY - startY;
+    if (Math.abs(dist) < 2) return;
+    const dur = Math.min(560, Math.max(260, Math.abs(dist) * 0.35));
+    let t0 = null; active = true;
+    function step(ts){
+      if (t0 === null) t0 = ts;
+      const p = Math.min(1, (ts - t0) / dur);
+      window.scrollTo(0, startY + dist * easeOutCubic(p));
+      if (p < 1 && active) requestAnimationFrame(step); else active = false;
+    }
+    requestAnimationFrame(step);
+  }
+  // let a manual gesture cancel the programmatic scroll instantly
+  ['wheel','touchstart','keydown'].forEach(ev => window.addEventListener(ev, () => { active = false; }, {passive:true}));
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    const href = a.getAttribute('href');
+    if (!href || href === '#') return;
+    const target = document.querySelector(href);
+    if (!target) return;
+    e.preventDefault();
+    smoothScrollTo(target);
+  });
+})();
+
+/* ===== Language switch ===== */
+let currentLang = localStorage.getItem('lang') || 'en';
+function applyLang(lang){
+  currentLang = lang;
+  document.documentElement.lang = lang;
+  document.body.classList.toggle('lang-ka', lang === 'ka');
+  document.querySelectorAll('[data-en]').forEach(el => {
+    const v = el.getAttribute('data-' + lang);
+    if (v !== null) el.innerHTML = v;
+  });
+  document.querySelectorAll('[data-en-ph]').forEach(el => {
+    const v = el.getAttribute('data-' + lang + '-ph');
+    if (v !== null) el.placeholder = v;
+  });
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+  localStorage.setItem('lang', lang);
+}
+document.querySelectorAll('.lang-btn').forEach(b => b.addEventListener('click', () => applyLang(b.dataset.lang)));
+applyLang(currentLang);
+
+/* today's hours (run after language so the badge text matches) */
+function markToday(){
+  document.querySelectorAll('#hours .now').forEach(n => n.remove());
+  document.querySelectorAll('#hours .hr').forEach(r => r.classList.remove('today'));
+  const d = new Date().getDay(); // 0 Sun .. 6 Sat
+  const rows = document.querySelectorAll('#hours .hr');
+  const idx = (d >= 1 && d <= 5) ? 0 : (d === 6 ? 1 : 2);
+  if (rows[idx]){
+    rows[idx].classList.add('today');
+    const tag = document.createElement('span');
+    tag.className = 'now';
+    tag.textContent = currentLang === 'ka' ? 'დღეს' : 'Today';
+    rows[idx].querySelector('.time').appendChild(document.createTextNode(' '));
+    rows[idx].querySelector('.time').appendChild(tag);
+  }
+}
+markToday();
+document.querySelectorAll('.lang-btn').forEach(b => b.addEventListener('click', markToday));
+
+/* reveal */
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const els = document.querySelectorAll('.reveal');
+if (reduce){ els.forEach(e => e.classList.add('in')); }
+else {
+  const io = new IntersectionObserver((ents)=>{ents.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12,rootMargin:'0px 0px -8% 0px'});
+  els.forEach(e=>io.observe(e));
+}
+
+/* ===== Custom animated select (replaces native dropdown look) ===== */
+function closeAllSelects(except){
+  document.querySelectorAll('.csel.open').forEach(w=>{
+    if(w!==except) w.querySelector('.csel-native')._cs.close();
+  });
+}
+function enhanceSelect(sel){
+  if(sel._cs) return sel._cs;
+  const wrap=document.createElement('div'); wrap.className='csel';
+  sel.parentNode.insertBefore(wrap, sel);
+  wrap.appendChild(sel);
+  sel.classList.add('csel-native'); sel.setAttribute('tabindex','-1'); sel.setAttribute('aria-hidden','true');
+
+  const trigger=document.createElement('button');
+  trigger.type='button'; trigger.className='csel-trigger';
+  trigger.setAttribute('aria-haspopup','listbox');
+  trigger.setAttribute('aria-expanded','false');
+  const lab = sel.id && document.querySelector(`label[for="${sel.id}"]`);
+  if(lab) trigger.setAttribute('aria-label', lab.textContent.replace('*','').trim());
+  trigger.innerHTML='<span class="csel-value"></span>'+
+    '<svg class="csel-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>';
+
+  const panel=document.createElement('div'); panel.className='csel-panel'; panel.setAttribute('role','listbox');
+  wrap.appendChild(trigger); wrap.appendChild(panel);
+  const valEl=trigger.querySelector('.csel-value');
+  const tick='<svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>';
+  let activeIdx=-1;
+
+  function refresh(){
+    const opts=[...sel.options];
+    panel.innerHTML=opts.map((o,i)=>
+      `<button type="button" role="option" class="csel-opt${o.selected?' sel':''}" data-i="${i}" aria-selected="${o.selected}"><span>${o.textContent}</span>${tick}</button>`
+    ).join('');
+    const cur=sel.selectedIndex>=0?opts[sel.selectedIndex]:null;
+    valEl.textContent=cur?cur.textContent:'';
+  }
+  const isOpen=()=>wrap.classList.contains('open');
+  function open(){
+    if(isOpen()||!sel.options.length) return;
+    closeAllSelects(wrap);
+    refresh(); wrap.classList.add('open'); trigger.setAttribute('aria-expanded','true');
+    activeIdx=sel.selectedIndex; highlight();
+    const a=panel.querySelector('.csel-opt.sel'); if(a) a.scrollIntoView({block:'nearest'});
+  }
+  function close(){ wrap.classList.remove('open'); trigger.setAttribute('aria-expanded','false'); activeIdx=-1; }
+  function highlight(){ panel.querySelectorAll('.csel-opt').forEach((o,i)=>o.classList.toggle('active',i===activeIdx)); }
+  function scrollActive(){ const a=panel.querySelectorAll('.csel-opt')[activeIdx]; if(a) a.scrollIntoView({block:'nearest'}); }
+  function choose(i){
+    if(i<0||i>=sel.options.length) return;
+    if(i!==sel.selectedIndex){ sel.selectedIndex=i; sel.dispatchEvent(new Event('change',{bubbles:true})); }
+    refresh(); close(); trigger.focus();
+  }
+
+  trigger.addEventListener('click',()=>isOpen()?close():open());
+  panel.addEventListener('click',e=>{ const o=e.target.closest('.csel-opt'); if(o) choose(+o.dataset.i); });
+  trigger.addEventListener('keydown',e=>{
+    if(!isOpen()){
+      if(['ArrowDown','ArrowUp','Enter',' '].includes(e.key)){ e.preventDefault(); open(); }
+      return;
+    }
+    if(e.key==='ArrowDown'){ e.preventDefault(); activeIdx=Math.min(activeIdx+1,sel.options.length-1); highlight(); scrollActive(); }
+    else if(e.key==='ArrowUp'){ e.preventDefault(); activeIdx=Math.max(activeIdx-1,0); highlight(); scrollActive(); }
+    else if(e.key==='Home'){ e.preventDefault(); activeIdx=0; highlight(); scrollActive(); }
+    else if(e.key==='End'){ e.preventDefault(); activeIdx=sel.options.length-1; highlight(); scrollActive(); }
+    else if(e.key==='Enter'||e.key===' '){ e.preventDefault(); choose(activeIdx); }
+    else if(e.key==='Escape'){ e.preventDefault(); close(); }
+    else if(e.key==='Tab'){ close(); }
+  });
+  document.addEventListener('click',e=>{ if(!wrap.contains(e.target)) close(); });
+  sel.addEventListener('change',refresh);
+
+  sel._cs={refresh,open,close};
+  refresh();
+  return sel._cs;
+}
+
+/* ===== Booking (Supabase) ===== */
+(function(){
+  const cfg = window.SUPABASE_CONFIG;
+  if(!cfg || !window.supabase){ console.error('Supabase not loaded'); return; }
+  const sb = window.supabase.createClient(cfg.url, cfg.anonKey);
+  const $ = id => document.getElementById(id);
+  const svcSel=$('bk-service'), barSel=$('bk-barber'),
+        slotsBox=$('bk-slots'), form=$('bookForm'), okBox=$('formOk'), errBox=$('formErr'),
+        calTitle=$('cal-title'), calGrid=$('cal-grid'), calPrev=$('cal-prev'), calNext=$('cal-next');
+  enhanceSelect(svcSel); enhanceSelect(barSel);
+  const t=(en,ka)=> currentLang==='ka'?ka:en;
+  const pad=n=>String(n).padStart(2,'0');
+  const hhmm=m=>pad(Math.floor(m/60))+':'+pad(m%60);
+  const ymd=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  const todayStr=()=>ymd(new Date());
+  const DOW={en:['SUN','MON','TUE','WED','THU','FRI','SAT'],ka:['კვ','ორ','სა','ოთ','ხუ','პა','შა']};
+  const MON={en:['January','February','March','April','May','June','July','August','September','October','November','December'],
+             ka:['იანვარი','თებერვალი','მარტი','აპრილი','მაისი','ივნისი','ივლისი','აგვისტო','სექტემბერი','ოქტომბერი','ნოემბერი','დეკემბერი']};
+  let services=[], barbers=[], workdays={}, daysOff={}, selectedSlot=null, selectedDate=null;
+  const view=new Date(); view.setDate(1);
+
+  function renderSelects(){
+    const svcKeep=svcSel.value, barKeep=barSel.value;
+    svcSel.innerHTML = services.map(s=>{
+      const name = currentLang==='ka'?s.name_ka:s.name_en;
+      return `<option value="${s.id}">${name} · ${s.price}₾ · ${s.duration_min}${t('min','წთ')}</option>`;
+    }).join('');
+    barSel.innerHTML = barbers.map(b=>`<option value="${b.id}">${currentLang==='ka'?b.name_ka:b.name_en}</option>`).join('');
+    if(svcKeep) svcSel.value=svcKeep;
+    if(barKeep) barSel.value=barKeep;
+    if(svcSel._cs) svcSel._cs.refresh();
+    if(barSel._cs) barSel._cs.refresh();
+  }
+  const svc=()=>services.find(s=>s.id===svcSel.value);
+
+  function renderCal(){
+    const lang=currentLang==='ka'?'ka':'en';
+    const y=view.getFullYear(), m=view.getMonth();
+    calTitle.textContent=`${MON[lang][m]} ${y}`;
+    const firstDow=new Date(y,m,1).getDay();
+    const days=new Date(y,m+1,0).getDate();
+    const today=new Date(); today.setHours(0,0,0,0);
+    const barberWd=workdays[barSel.value]||null;
+    const barberOff=daysOff[barSel.value]||null;
+    calPrev.disabled = (y<today.getFullYear()) || (y===today.getFullYear() && m<=today.getMonth());
+    let html = DOW[lang].map(d=>`<div class="cal-dow">${d}</div>`).join('');
+    for(let i=0;i<firstDow;i++) html+=`<div class="cal-day empty"></div>`;
+    for(let d=1;d<=days;d++){
+      const date=new Date(y,m,d), ds=ymd(date), wd=date.getDay();
+      const off=(barberWd?!barberWd.has(wd):false) || (barberOff?barberOff.has(ds):false);
+      const past=date<today, disabled=past||off;
+      const cls=['cal-day'];
+      if(disabled) cls.push('off');
+      if(ds===todayStr()) cls.push('today');
+      if(ds===selectedDate) cls.push('sel');
+      html+=`<div class="${cls.join(' ')}" ${disabled?'':`data-date="${ds}"`}>${d}</div>`;
+    }
+    calGrid.innerHTML=html;
+  }
+  calPrev.addEventListener('click',()=>{ if(calPrev.disabled)return; view.setMonth(view.getMonth()-1); renderCal(); });
+  calNext.addEventListener('click',()=>{ view.setMonth(view.getMonth()+1); renderCal(); });
+  calGrid.addEventListener('click',e=>{
+    const c=e.target.closest('.cal-day'); if(!c||!c.dataset.date) return;
+    selectedDate=c.dataset.date; renderCal(); loadSlots();
+  });
+
+  async function loadSlots(){
+    selectedSlot=null;
+    const s=svc(), barberId=barSel.value;
+    if(!s||!barberId||!selectedDate){
+      slotsBox.innerHTML=`<p class="slots-hint">${t('Choose a service, barber and date.','აირჩიე სერვისი, ბარბერი და თარიღი.')}</p>`; return;
+    }
+    if(daysOff[barberId] && daysOff[barberId].has(selectedDate)){
+      slotsBox.innerHTML=`<p class="slots-hint">${t('This barber is not available on this day.','ეს ბარბერი ამ დღეს არ არის ხელმისაწვდომი.')}</p>`; return;
+    }
+    slotsBox.innerHTML=`<p class="slots-hint">${t('Loading…','იტვირთება…')}</p>`;
+    const weekday=new Date(selectedDate+'T00:00:00').getDay();
+    const [{data:wh},{data:dh}]=await Promise.all([
+      sb.from('working_hours').select('open_time,close_time').eq('barber_id',barberId).eq('weekday',weekday).maybeSingle(),
+      sb.from('barber_day_hours').select('open_time,close_time').eq('barber_id',barberId).eq('work_date',selectedDate).maybeSingle()
+    ]);
+    const eff = dh || wh;   // per-date hours override wins over the weekly schedule
+    if(!eff){ slotsBox.innerHTML=`<p class="slots-hint">${t('This barber is off on this day.','ეს ბარბერი ამ დღეს ისვენებს.')}</p>`; return; }
+    const {data:busy}=await sb.rpc('busy_slots',{p_barber:barberId,p_date:selectedDate});
+    const toMin=hms=>{const[h,m]=hms.split(':');return (+h)*60+(+m);};
+    const open=toMin(eff.open_time), close=toMin(eff.close_time), dur=s.duration_min, step=20;
+    const busyRanges=(busy||[]).map(b=>{const ds=new Date(b.starts_at),de=new Date(b.ends_at);
+      return [ds.getHours()*60+ds.getMinutes(), de.getHours()*60+de.getMinutes()];});
+    // editing your own booking: free up its current slot (same barber & date)
+    if(editingToken && editBooking && barberId===editBooking.barber_id && selectedDate===editBooking.starts_at.split('T')[0]){
+      const os=tmin(editBooking.starts_at), oe=tmin(editBooking.ends_at);
+      const i=busyRanges.findIndex(([a,b2])=>a===os&&b2===oe); if(i>=0) busyRanges.splice(i,1);
+    }
+    const isToday=selectedDate===todayStr(); const nowMin=new Date().getHours()*60+new Date().getMinutes();
+    const slots=[];
+    for(let st=open; st+dur<=close; st+=step){
+      const en=st+dur;
+      if(busyRanges.some(([bs,be])=> st<be && en>bs)) continue;
+      if(isToday && st<nowMin+10) continue;
+      slots.push(st);
+    }
+    slotsBox.innerHTML = slots.length
+      ? slots.map((st,i)=>`<button type="button" class="slot" data-min="${st}" style="--i:${i}">${hhmm(st)}</button>`).join('')
+      : `<p class="slots-hint">${t('No free times on this day.','ამ დღეს თავისუფალი დრო არ არის.')}</p>`;
+  }
+
+  slotsBox.addEventListener('click',e=>{
+    const b=e.target.closest('.slot'); if(!b) return;
+    slotsBox.querySelectorAll('.slot').forEach(x=>x.classList.remove('sel'));
+    b.classList.add('sel'); selectedSlot=+b.dataset.min;
+  });
+  svcSel.addEventListener('change',loadSlots);
+  barSel.addEventListener('change',()=>{
+    if(selectedDate){ const wd=new Date(selectedDate+'T00:00:00').getDay(); const bw=workdays[barSel.value]; const bo=daysOff[barSel.value];
+      if((bw&&!bw.has(wd)) || (bo&&bo.has(selectedDate))) selectedDate=null; }
+    renderCal(); loadSlots();
+  });
+  document.querySelectorAll('.lang-btn').forEach(b=>b.addEventListener('click',()=>{renderSelects();renderCal();loadSlots();}));
+
+  function showErr(m){ errBox.textContent=m; errBox.style.display='block'; }
+
+  function showBooked(titleEn,titleKa){
+    const pop=document.getElementById('bookedPop'), ttl=pop.querySelector('.booked-title');
+    ttl.textContent=t(titleEn,titleKa);
+    pop.classList.add('show');
+    clearTimeout(pop._t); pop._t=setTimeout(()=>pop.classList.remove('show'),5000);
+  }
+
+  /* hand the customer off to WhatsApp with the booking details pre-filled,
+     so they send it to the shop (who / when / what) — no server needed */
+  const SHOP_WA='995514400010';   // shop WhatsApp number: 514 40 00 10
+  function notifyShopWhatsApp({name, phone, svc, barberId, dateStr, min}){
+    const bar=barbers.find(b=>b.id===barberId);
+    const svcName=svc?t(svc.name_en,svc.name_ka):'';
+    const barName=bar?t(bar.name_en,bar.name_ka):'';
+    const when=`${fmtD(dateStr)} · ${hhmm(min)}`;
+    const msg=t(
+      `New booking — Gentleman 💈\nName: ${name}\nPhone: ${phone}\nService: ${svcName}\nBarber: ${barName}\nWhen: ${when}`,
+      `ახალი ჯავშანი — Gentleman 💈\nსახელი: ${name}\nტელეფონი: ${phone}\nსერვისი: ${svcName}\nბარბერი: ${barName}\nდრო: ${when}`
+    );
+    const url=`https://wa.me/${SHOP_WA}?text=${encodeURIComponent(msg)}`;
+    // let the "confirmed" toast flash, then open WhatsApp's send page
+    setTimeout(()=>{ window.location.href=url; }, 900);
+  }
+
+  form.addEventListener('submit', async ev=>{
+    ev.preventDefault(); errBox.style.display='none';
+    if(!selectedDate){ showErr(t('Please pick a date.','აირჩიე თარიღი.')); return; }
+    if(selectedSlot==null){ showErr(t('Please pick a time.','აირჩიე დრო.')); return; }
+    const s=svc(), st=selectedSlot, en=st+s.duration_min;
+    const starts=`${selectedDate}T${hhmm(st)}:00`, ends=`${selectedDate}T${hhmm(en)}:00`;
+    const btn=form.querySelector('button[type=submit]'), label=btn.querySelector('.btn-label'), orig=label.textContent;
+
+    /* ── EDIT MODE: change service/barber/date/time of an existing booking ── */
+    if(editingToken){
+      btn.style.opacity='.7'; btn.style.pointerEvents='none'; label.textContent=t('Saving…','ინახება…');
+      const {data,error}=await sb.rpc('reschedule_my_booking',
+        {p_token:editingToken, p_service:s.id, p_barber:barSel.value, p_starts:starts, p_ends:ends});
+      btn.style.opacity=''; btn.style.pointerEvents=''; label.textContent=orig;
+      const map={taken:t('That time was just taken. Pick another.','ეს დრო ახლახან დაიკავეს. აირჩიე სხვა.'),
+        outside_hours:t('Outside working hours.','სამუშაო საათების გარეთ.'),
+        barber_off:t('Barber is off this day.','ამ დღეს ბარბერი ისვენებს.'),
+        past:t('Pick a future time.','აირჩიე მომავალი დრო.'),
+        not_editable:t('This booking can no longer be changed.','ამ ჯავშნის შეცვლა აღარ შეიძლება.')};
+      if(error||data!=='ok'){
+        const msg = (error && /barber_unavailable/i.test(error.message||''))
+          ? t('This barber is not available on that day. Pick another day or barber.','ეს ბარბერი ამ დღეს არ არის ხელმისაწვდომი — აირჩიე სხვა დღე ან ბარბერი.')
+          : (map[data]||t('Could not save changes.','ცვლილება ვერ შეინახა.'));
+        showErr(msg); if(data==='taken') loadSlots(); return;
+      }
+      exitEdit();
+      showBooked('Booking Updated!','ჯავშანი განახლდა!');
+      selectedSlot=null; loadSlots();
+      return;
+    }
+
+    /* ── NEW BOOKING ── */
+    const name=$('bk-name').value.trim(), phone=$('bk-phone').value.trim();
+    let ok=true;
+    [['bk-name',name],['bk-phone',phone]].forEach(([id,v])=>{ $(id).style.borderColor=v?'':'#e5484d'; if(!v) ok=false; });
+    if(!ok){ showErr(t('Please enter your name and phone.','შეავსე სახელი და ტელეფონი.')); return; }
+    btn.style.opacity='.7'; btn.style.pointerEvents='none'; label.textContent=t('Booking…','იჯავშნება…');
+    const token=uuid();
+    const {error}=await sb.from('bookings').insert({
+      barber_id:barSel.value, service_id:s.id, customer_name:name, customer_phone:phone, starts_at:starts, ends_at:ends, manage_token:token
+    });
+    btn.style.opacity=''; btn.style.pointerEvents=''; label.textContent=orig;
+    if(error){
+      if(/barber_unavailable/i.test(error.message||'')){
+        showErr(t('This barber is not available on that day. Pick another day or barber.','ეს ბარბერი ამ დღეს არ არის ხელმისაწვდომი — აირჩიე სხვა დღე ან ბარბერი.'));
+      } else if(/duplicate_booking/i.test(error.message||'')){
+        showErr(t('You already have an upcoming booking. Change or cancel it first.','უკვე გაქვს მომავალი ჯავშანი — ჯერ შეცვალე ან გააუქმე.'));
+        openManage();
+      } else if(error.code==='23P01' || /overlap|exclusion/i.test(error.message||'')){
+        showErr(t('That time was just taken. Pick another, please.','ეს დრო ახლახან დაიკავეს. აირჩიე სხვა.')); loadSlots();
+      } else { showErr(t('Something went wrong. Please call us.','რაღაც ვერ მოხერხდა. დაგვირეკეთ.')); }
+      return;
+    }
+    saveToken(token);
+    showBooked('Booking Confirmed!','შეკვეთა გაფორმდა!');
+    notifyShopWhatsApp({name, phone, svc:s, barberId:barSel.value, dateStr:selectedDate, min:st});
+    $('bk-name').value=''; $('bk-phone').value=''; selectedSlot=null; loadSlots();
+  });
+
+  /* ===== self-service: manage / reschedule / cancel ===== */
+  function uuid(){ return (window.crypto&&crypto.randomUUID) ? crypto.randomUUID()
+    : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0,v=c==='x'?r:(r&0x3|0x8);return v.toString(16);}); }
+  const TOK_KEY='gb_booking_tokens';
+  function getTokens(){ try{return JSON.parse(localStorage.getItem(TOK_KEY))||[]}catch(e){return []} }
+  function saveToken(tk){ const a=getTokens(); if(!a.includes(tk)){a.unshift(tk); localStorage.setItem(TOK_KEY,JSON.stringify(a.slice(0,20)));} }
+  function dropToken(tk){ localStorage.setItem(TOK_KEY,JSON.stringify(getTokens().filter(x=>x!==tk))); }
+  const monArr=()=>MON[currentLang==='ka'?'ka':'en'];
+  const fmtD=ds=>{ const [y,m,d]=ds.split('-'); return `${+d} ${monArr()[+m-1]} ${y}`; };
+  const STATUS_L={confirmed:['Active','აქტიური'],done:['Completed','შესრულებული'],cancelled:['Cancelled','გაუქმებული']};
+
+  const mPop=$('managePop'), mBody=$('manageBody');
+  function openManage(){ mPop.classList.add('show'); renderManageList(); }
+  function closeManage(){ mPop.classList.remove('show'); }
+  $('manageLink').addEventListener('click',openManage);
+  $('manageClose').addEventListener('click',closeManage);
+  mPop.addEventListener('click',e=>{ if(e.target===mPop) closeManage(); });
+
+  function manageCodeBox(){ return `<div class="mng-code">
+      <label>${t('Have a booking code?','გაქვს ჯავშნის კოდი?')}</label>
+      <div class="mng-code-row"><input id="mCode" type="text" placeholder="${t('Paste code','ჩასვი კოდი')}" />
+      <button type="button" id="mCodeBtn" class="mng-btn">${t('Find','ძებნა')}</button></div></div>`; }
+  function manageEmpty(){ return `<p class="mng-none">${t('No saved bookings on this device.','ამ მოწყობილობაზე შენახული ჯავშანი არ არის.')}</p>`+manageCodeBox(); }
+  function wireCodeForm(){
+    const b=$('mCodeBtn'); if(!b) return;
+    b.addEventListener('click',async()=>{
+      const code=($('mCode').value||'').trim(); if(!code) return;
+      const {data}=await sb.rpc('get_my_booking',{p_token:code});
+      if(data&&data[0]){ saveToken(code); renderManageList(); } else { $('mCode').style.borderColor='#e5484d'; }
+    });
+  }
+
+  async function renderManageList(){
+    const tokens=getTokens();
+    if(!tokens.length){ mBody.innerHTML=manageEmpty(); wireCodeForm(); return; }
+    mBody.innerHTML=`<p class="slots-hint">${t('Loading…','იტვირთება…')}</p>`;
+    const results=await Promise.all(tokens.map(tk=>sb.rpc('get_my_booking',{p_token:tk}).then(r=>({tk,row:(r.data&&r.data[0])||null}))));
+    results.filter(r=>!r.row).forEach(r=>dropToken(r.tk));
+    const items=results.filter(r=>r.row);
+    if(!items.length){ mBody.innerHTML=manageEmpty(); wireCodeForm(); return; }
+    mBody.innerHTML = items.map(({tk,row})=>{
+      const past=new Date(row.starts_at)<new Date();
+      const can = row.status==='confirmed' && !past;
+      const sl=STATUS_L[row.status]||['',''], stt=currentLang==='ka'?sl[1]:sl[0];
+      const svcN=currentLang==='ka'?row.service_ka:row.service_en, barN=currentLang==='ka'?row.barber_ka:row.barber_en;
+      return `<div class="mng-item" data-token="${tk}">
+        <div class="mng-h"><b>${svcN}</b><span class="mng-status s-${row.status}">${stt}</span></div>
+        <div class="mng-meta">${barN} · ${fmtD(row.starts_at.split('T')[0])} · ${row.starts_at.split('T')[1].slice(0,5)}</div>
+        ${can?`<div class="mng-acts">
+          <button type="button" class="mng-btn" data-act="resched">${t('Edit booking','ჯავშნის შეცვლა')}</button>
+          <button type="button" class="mng-btn danger" data-act="cancel">${t('Cancel','გაუქმება')}</button>
+        </div>
+        <div class="mng-code-show">${t('Code','კოდი')}: <span>${tk}</span><button type="button" class="mng-copy" data-copy="${tk}">${t('Copy','კოპირება')}</button></div>`:''}
+      </div>`;
+    }).join('') + manageCodeBox();
+    wireCodeForm();
+  }
+
+  mBody.addEventListener('click',async e=>{
+    const cp=e.target.closest('.mng-copy');
+    if(cp){ try{await navigator.clipboard.writeText(cp.dataset.copy);}catch(_){} cp.textContent=t('Copied','დაკოპირდა'); return; }
+    const item=e.target.closest('.mng-item'), btn=e.target.closest('.mng-btn[data-act]');
+    if(!item||!btn) return;
+    const tk=item.dataset.token, act=btn.dataset.act;
+    if(act==='cancel'){
+      if(!confirm(t('Cancel this booking?','გავაუქმო ეს ჯავშანი?'))) return;
+      btn.disabled=true;
+      const {data}=await sb.rpc('cancel_my_booking',{p_token:tk});
+      if(data==='ok') renderManageList();
+      else { alert(t('Could not cancel. Please call us.','ვერ გაუქმდა. დაგვირეკეთ.')); btn.disabled=false; }
+    } else if(act==='resched'){ openResched(tk); }
+  });
+
+  /* reschedule = reuse the main booking form in EDIT MODE (service+barber+date+time) */
+  let editingToken=null, editBooking=null;
+  const tmin=iso=>{ const [h,m]=iso.split('T')[1].split(':'); return (+h)*60+(+m); };
+
+  async function openResched(tk){
+    const {data}=await sb.rpc('get_my_booking',{p_token:tk});
+    const row=data&&data[0]; if(!row) return;
+    enterEdit(row, tk);
+  }
+  function setEditUI(on){
+    $('editBanner').style.display = on ? 'flex' : 'none';
+    $('nameRow').style.display = on ? 'none' : '';
+    const lbl=form.querySelector('.btn-label');
+    lbl.setAttribute('data-en', on?'Save Changes':'Confirm Booking');
+    lbl.setAttribute('data-ka', on?'ცვლილების შენახვა':'ჯავშნის დადასტურება');
+    lbl.textContent = t(on?'Save Changes':'Confirm Booking', on?'ცვლილების შენახვა':'ჯავშნის დადასტურება');
+  }
+  function enterEdit(row, tk){
+    editingToken=tk; editBooking=row;
+    closeManage();
+    svcSel.value=row.service_id; barSel.value=row.barber_id;
+    if(svcSel._cs) svcSel._cs.refresh(); if(barSel._cs) barSel._cs.refresh();
+    selectedDate=row.starts_at.split('T')[0];
+    const d=new Date(selectedDate+'T00:00:00'); view.setFullYear(d.getFullYear(), d.getMonth(), 1);
+    selectedSlot=null; errBox.style.display='none';
+    setEditUI(true);
+    renderCal(); loadSlots();
+    document.getElementById('visit').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  function exitEdit(){
+    editingToken=null; editBooking=null; selectedSlot=null;
+    setEditUI(false); errBox.style.display='none';
+  }
+  $('editCancel').addEventListener('click',exitEdit);
+
+  (async function init(){
+    const [{data:sv},{data:ba},{data:wd},{data:doff}]=await Promise.all([
+      sb.from('services').select('*').order('sort'),
+      sb.from('barbers').select('*').order('sort'),
+      sb.from('working_hours').select('barber_id,weekday'),
+      sb.from('barber_days_off').select('barber_id,off_date').gte('off_date',todayStr())
+    ]);
+    services=sv||[]; barbers=ba||[];
+    workdays={}; (wd||[]).forEach(r=>{ (workdays[r.barber_id]=workdays[r.barber_id]||new Set()).add(r.weekday); });
+    daysOff={}; (doff||[]).forEach(r=>{ (daysOff[r.barber_id]=daysOff[r.barber_id]||new Set()).add(r.off_date); });
+    renderSelects(); renderCal();
+  })();
+})();
+</script>
+</body>
+</html>

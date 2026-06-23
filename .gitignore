@@ -1,0 +1,19 @@
+# ── secrets / local env ───────────────────────────────
+# The public anon key lives in js/config.js (committed) — it is RLS-safe.
+# .env.local also holds commented admin notes, so keep it out of git.
+.env.local
+.env
+.env.*
+
+# ── Claude Code local settings ────────────────────────
+.claude/settings.local.json
+
+# ── OS / editor junk ──────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+*~
+*.swp
+
+# ── logs ──────────────────────────────────────────────
+*.log
