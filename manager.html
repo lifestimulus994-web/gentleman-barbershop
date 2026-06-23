@@ -67,7 +67,7 @@ input,select{font-family:inherit}
 .col-body{position:relative;border-left:1px solid var(--line);cursor:copy}
 .col-body.time-axis{border-left:none;cursor:default;position:sticky;left:0;z-index:3;background:var(--bg)}
 .hourline{position:absolute;left:0;right:0;border-top:1px dashed var(--line);pointer-events:none}
-.hourlabel{position:absolute;right:8px;transform:translateY(-50%);font-size:.72rem;color:var(--muted-2);font-family:'Archivo';font-weight:600}
+.hourlabel{position:absolute;right:8px;transform:translateY(-50%);font-size:.72rem;color:var(--muted-2);font-family:'Archivo','Noto Sans Georgian';font-weight:600}
 .bk{position:absolute;left:4px;right:4px;border-radius:9px;padding:5px 8px;overflow:hidden;
   background:linear-gradient(135deg,rgba(99,102,241,.30),rgba(99,102,241,.16));
   border:1px solid rgba(99,102,241,.55);cursor:pointer;display:flex;flex-direction:column;gap:1px;transition:.12s}
@@ -143,7 +143,7 @@ input,select{font-family:inherit}
   text-transform:uppercase;padding:0 8px 8px;border-bottom:1px solid var(--line)}
 .fin-table th:first-child,.fin-table td:first-child{text-align:left}
 .fin-table td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
-.fin-table td.num{text-align:right;font-family:'Archivo';font-weight:700;font-variant-numeric:tabular-nums}
+.fin-table td.num{text-align:right;font-family:'Archivo','Noto Sans Georgian';font-weight:700;font-variant-numeric:tabular-nums}
 .fin-table tr:last-child td{border-bottom:none}
 .fin-table .nm{font-weight:600}
 .fin-table .sub{font-size:.72rem;color:var(--muted-2);font-weight:400}
@@ -151,7 +151,7 @@ input,select{font-family:inherit}
 .fin-sum .row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 2px;border-bottom:1px solid var(--line)}
 .fin-sum .row:last-child{border-bottom:none}
 .fin-sum .row .k{font-size:.88rem;color:var(--muted)}
-.fin-sum .row .v{font-family:'Archivo';font-weight:800;font-size:.98rem;font-variant-numeric:tabular-nums}
+.fin-sum .row .v{font-family:'Archivo','Noto Sans Georgian';font-weight:800;font-size:.98rem;font-variant-numeric:tabular-nums}
 .fin-sum .row.total{margin-top:6px;padding-top:14px;border-top:2px solid var(--line-2)}
 .fin-sum .row.total .k{color:var(--text);font-weight:700;font-family:'Noto Sans Georgian','Archivo'}
 .fin-sum .row.total .v{font-size:1.3rem}
@@ -160,12 +160,12 @@ input,select{font-family:inherit}
 .fin-sum .v.net{color:#9fe0ff}
 .entry-row{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid var(--line);font-size:.85rem}
 .entry-row:last-child{border-bottom:none}
-.entry-row .badge{font-size:.66rem;font-weight:700;padding:2px 7px;border-radius:6px;font-family:'Archivo';white-space:nowrap}
+.entry-row .badge{font-size:.66rem;font-weight:700;padding:2px 7px;border-radius:6px;font-family:'Archivo','Noto Sans Georgian';white-space:nowrap}
 .entry-row .badge.in{background:rgba(63,185,80,.16);color:#9fe0a8}
 .entry-row .badge.ex{background:rgba(229,72,77,.16);color:#e5747a}
 .entry-row .cat{font-weight:600}
 .entry-row .lbl{color:var(--muted-2);font-size:.76rem}
-.entry-row .amt{margin-left:auto;font-family:'Archivo';font-weight:700;font-variant-numeric:tabular-nums}
+.entry-row .amt{margin-left:auto;font-family:'Archivo','Noto Sans Georgian';font-weight:700;font-variant-numeric:tabular-nums}
 .entry-row .eb{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.9rem;
   border:1px solid var(--line-2);color:var(--muted);transition:.15s}
 .entry-row .eb:hover{border-color:var(--text);color:var(--text)}
@@ -179,7 +179,7 @@ input,select{font-family:inherit}
 /* ---- booking action sheet ---- */
 .bk-info{position:relative;background:var(--card-2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:16px}
 .bk-info .svc-l{font-family:'Noto Sans Georgian','Archivo';font-weight:700;font-size:1rem;margin-bottom:6px;padding-right:72px}
-.bk-info .svc-price{position:absolute;top:13px;right:14px;font-family:'Archivo';font-weight:800;font-size:1rem;
+.bk-info .svc-price{position:absolute;top:13px;right:14px;font-family:'Archivo','Noto Sans Georgian';font-weight:800;font-size:1rem;
   color:#9fe0ff;background:rgba(99,102,241,.14);border:1px solid rgba(99,102,241,.35);border-radius:8px;padding:3px 9px;white-space:nowrap}
 .bk-info .meta{font-size:.88rem;color:var(--muted);line-height:1.7}
 .bk-info .meta a{color:#c8caf6;text-decoration:none}
@@ -209,13 +209,13 @@ input,select{font-family:inherit}
 .chan{margin-bottom:13px}
 .chan-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:5px}
 .chan-k{font-size:.86rem;color:var(--muted)}
-.chan-v{font-family:'Archivo';font-weight:800;font-size:.96rem;font-variant-numeric:tabular-nums}
+.chan-v{font-family:'Archivo','Noto Sans Georgian';font-weight:800;font-size:.96rem;font-variant-numeric:tabular-nums}
 .chan-bar{height:8px;border-radius:6px;background:var(--card-2);overflow:hidden}
 .chan-bar i{display:block;height:100%;width:0;border-radius:6px;transition:width .55s cubic-bezier(.22,.61,.36,1)}
 .chan-pct{font-size:.7rem;color:var(--muted-2);text-align:right;margin-top:3px;font-variant-numeric:tabular-nums}
 .chan-total{display:flex;justify-content:space-between;align-items:baseline;padding-top:12px;margin-top:8px;
   border-top:2px solid var(--line-2);font-family:'Noto Sans Georgian','Archivo';font-weight:700}
-.chan-total .ct-v{font-family:'Archivo';font-weight:800;font-size:1.1rem;font-variant-numeric:tabular-nums}
+.chan-total .ct-v{font-family:'Archivo','Noto Sans Georgian';font-weight:800;font-size:1.1rem;font-variant-numeric:tabular-nums}
 
 /* ════════════ MOBILE ════════════ */
 @media(max-width:720px){
