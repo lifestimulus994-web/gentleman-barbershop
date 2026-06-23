@@ -905,6 +905,9 @@ body.lang-ka .mng-copy{font-family:'Noto Sans Georgian',sans-serif}
   text-transform:uppercase;color:#c8caf6;border:1px solid rgba(99,102,241,.5);border-radius:8px;padding:6px 12px;transition:.2s}
 .edit-banner button:hover{background:rgba(99,102,241,.2);color:#fff}
 body.lang-ka .edit-banner button{font-family:'Noto Sans Georgian',sans-serif;letter-spacing:.02em;text-transform:none}
+
+/* ── no letter-spacing anywhere — keep letters tight together (ka & en) ── */
+*,*::before,*::after{letter-spacing:normal!important}
 </style>
 <script src="js/config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
