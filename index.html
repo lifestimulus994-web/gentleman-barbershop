@@ -1158,7 +1158,7 @@ function enhanceSelect(sel){
     if(!eff){ slotsBox.innerHTML=`<p class="slots-hint">${t('This barber is off on this day.','ეს ბარბერი ამ დღეს ისვენებს.')}</p>`; return; }
     const {data:busy}=await sb.rpc('busy_slots',{p_barber:barberId,p_date:selectedDate});
     const toMin=hms=>{const[h,m]=hms.split(':');return (+h)*60+(+m);};
-    const open=toMin(eff.open_time), close=toMin(eff.close_time), dur=s.duration_min, step=20;
+    const open=toMin(eff.open_time), close=toMin(eff.close_time), dur=s.duration_min, step=15;
     const busyRanges=(busy||[]).map(b=>{const ds=new Date(b.starts_at),de=new Date(b.ends_at);
       return [ds.getHours()*60+ds.getMinutes(), de.getHours()*60+de.getMinutes()];});
     // editing your own booking: free up its current slot (same barber & date)

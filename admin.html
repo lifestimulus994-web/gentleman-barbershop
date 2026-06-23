@@ -722,8 +722,8 @@ input,select{font-family:inherit}
     // click on empty area of a barber column → open add modal pre-filled
     const col=e.target.closest('.col-body');
     if(col && col.dataset.barber){
-      const y=e.offsetY; const min=OPEN*60 + Math.round((y/PPM)/20)*20;
-      openModal(col.dataset.barber, Math.min(Math.max(min,OPEN*60),CLOSE*60-20));
+      const y=e.offsetY; const min=OPEN*60 + Math.round((y/PPM)/15)*15;
+      openModal(col.dataset.barber, Math.min(Math.max(min,OPEN*60),CLOSE*60-15));
     }
   });
 
@@ -933,7 +933,7 @@ input,select{font-family:inherit}
     if(!eff) return null; // off that day
     const {data:busy}=await sb.rpc('busy_slots',{p_barber:barberId,p_date:dateStr});
     const toMin=hms=>{const[h,m]=hms.split(':');return (+h)*60+(+m);};
-    const open=toMin(eff.open_time), close=toMin(eff.close_time), step=20;
+    const open=toMin(eff.open_time), close=toMin(eff.close_time), step=15;
     const ranges=(busy||[]).map(b=>[minOf(b.starts_at),minOf(b.ends_at)]);
     const out=[];
     for(let st=open; st+dur<=close; st+=step){
