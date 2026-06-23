@@ -343,6 +343,19 @@ body.lang-ka .foot-col a,body.lang-ka .foot-col p,body.lang-ka .foot-brand p{fon
 @media(max-width:548px){
   .hero-inner .display{font-size:clamp(1.55rem,7vw,2.4rem)}
 }
+/* ---- mobile hero: compact card, content centered over the photo ---- */
+@media(max-width:768px){
+  .hero{padding:74px 14px 0}
+  .hero-card{min-height:72vh;align-items:center;text-align:center}
+  .hero-card img.bg{object-position:50% 26%}              /* keep the face above the headline */
+  .hero-card::after{background:linear-gradient(to bottom,
+      rgba(0,0,0,.40),rgba(0,0,0,.34) 36%,rgba(0,0,0,.82))} /* vertical fade for legibility */
+  .hero-inner{padding:24px 20px}
+  .hero-inner .eyebrow{margin-bottom:12px}
+  .hero-inner h1{margin-bottom:20px}
+  .hero-inner .book-link{justify-content:center}
+  .hero-rating{justify-content:center;margin-top:22px}
+}
 @media(prefers-reduced-motion:reduce){
   *{animation:none!important;scroll-behavior:auto!important}
   .reveal{opacity:1;transform:none;transition:none}
@@ -950,7 +963,7 @@ navlinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
 })();
 
 /* ===== Language switch ===== */
-let currentLang = localStorage.getItem('lang') || 'en';
+let currentLang = localStorage.getItem('lang') || 'ka';   // Georgian by default; visitor can switch to EN
 function applyLang(lang){
   currentLang = lang;
   document.documentElement.lang = lang;
