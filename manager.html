@@ -127,50 +127,64 @@ input,select{font-family:inherit}
 .viewtabs button.on{background:var(--text);color:var(--bg)}
 
 /* ---- finances ---- */
-.fin-wrap{padding:18px 20px 60px;max-width:1180px;margin:0 auto}
-.fin-period{display:inline-flex;gap:4px;background:var(--card-2);border:1px solid var(--line-2);border-radius:9px;padding:3px;margin-bottom:18px}
+.fin-wrap{padding:18px 20px 60px;max-width:1500px;margin:0 auto}
+.fin-topbar{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+.fin-period{display:inline-flex;gap:4px;background:var(--card-2);border:1px solid var(--line-2);border-radius:9px;padding:3px}
 .fin-period button{padding:6px 16px;border-radius:7px;font-family:'Noto Sans Georgian','Archivo';font-weight:600;font-size:.8rem;color:var(--muted);transition:.18s}
 .fin-period button.on{background:var(--accent);color:#fff}
-.fin-readonly{display:inline-flex;align-items:center;gap:6px;margin-left:12px;font-size:.74rem;color:var(--muted-2);
-  border:1px solid var(--line);border-radius:7px;padding:5px 10px}
-.fin-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:16px;align-items:start}
-@media(max-width:860px){.fin-grid{grid-template-columns:1fr}}
-.fin-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px}
-.fin-card h3{font-size:1.02rem;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:10px}
-.fin-card h3 .small{font-family:'Noto Sans Georgian','Inter';font-weight:400;font-size:.74rem;color:var(--muted-2)}
+.fin-main-grid{display:grid;grid-template-columns:190px 1fr 1fr;gap:14px;align-items:start}
+@media(max-width:1050px){.fin-main-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:580px){.fin-main-grid{grid-template-columns:1fr}}
+.fin-col{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.fin-col-head{padding:11px 14px;font-family:'Noto Sans Georgian','Archivo';font-weight:700;font-size:.88rem;
+  border-bottom:1px solid var(--line-2);background:var(--card-2);display:flex;align-items:center;justify-content:space-between;gap:8px}
 .fin-table{width:100%;border-collapse:collapse;font-size:.86rem}
-.fin-table th{text-align:right;font-family:'Noto Sans Georgian','Inter';font-weight:500;font-size:.7rem;letter-spacing:.03em;color:var(--muted-2);
-  text-transform:uppercase;padding:0 8px 8px;border-bottom:1px solid var(--line)}
+.fin-table th{text-align:right;font-family:'Noto Sans Georgian','Inter';font-weight:500;font-size:.7rem;color:var(--muted-2);
+  text-transform:uppercase;padding:7px 8px;border-bottom:1px solid var(--line)}
 .fin-table th:first-child,.fin-table td:first-child{text-align:left}
 .fin-table td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
 .fin-table td.num{text-align:right;font-family:'Archivo','Noto Sans Georgian';font-weight:700;font-variant-numeric:tabular-nums}
 .fin-table tr:last-child td{border-bottom:none}
 .fin-table .nm{font-weight:600}
-.fin-table .sub{font-size:.72rem;color:var(--muted-2);font-weight:400}
-.fin-sum{margin-top:4px}
-.fin-sum .row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 2px;border-bottom:1px solid var(--line)}
-.fin-sum .row:last-child{border-bottom:none}
-.fin-sum .row .k{font-size:.88rem;color:var(--muted)}
-.fin-sum .row .v{font-family:'Archivo','Noto Sans Georgian';font-weight:800;font-size:.98rem;font-variant-numeric:tabular-nums}
-.fin-sum .row.total{margin-top:6px;padding-top:14px;border-top:2px solid var(--line-2)}
-.fin-sum .row.total .k{color:var(--text);font-weight:700;font-family:'Noto Sans Georgian','Archivo'}
-.fin-sum .row.total .v{font-size:1.3rem}
-.fin-sum .v.plus{color:var(--ok)}
-.fin-sum .v.minus{color:#e5747a}
-.fin-sum .v.net{color:#9fe0ff}
-.entry-row{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid var(--line);font-size:.85rem}
+/* summary */
+.fin-sum-tbl{width:100%;border-collapse:collapse}
+.fin-sum-tbl tr{border-bottom:1px solid var(--line)}
+.fin-sum-tbl tr:last-child{border-bottom:none}
+.fin-sum-tbl td{padding:8px 12px;font-size:.86rem;line-height:1.3}
+.fin-sum-tbl td:last-child{text-align:right;font-family:'Archivo','Noto Sans Georgian';font-weight:600;font-variant-numeric:tabular-nums;min-width:85px;white-space:nowrap}
+.fin-sum-tbl .s-head{background:var(--card-2)}
+.fin-sum-tbl .s-head td{font-family:'Noto Sans Georgian','Archivo';font-weight:700;font-size:.72rem;color:var(--muted-2);letter-spacing:.04em;text-transform:uppercase;padding:5px 12px}
+.fin-sum-tbl .s-indent td:first-child{padding-left:22px;color:var(--muted)}
+.fin-sum-tbl .s-total td{font-weight:700}
+.fin-sum-tbl .s-hi{background:rgba(99,102,241,.06)}
+.fin-sum-tbl .s-plus td:last-child{color:var(--ok)}
+.fin-sum-tbl .s-minus td:last-child{color:#e5747a}
+.fin-sum-tbl .s-bal td{font-weight:800;background:rgba(99,102,241,.11)}
+.fin-edit-bal{background:none;border:none;border-bottom:1px dashed var(--line-2);color:var(--text);
+  font-family:'Archivo','Noto Sans Georgian';font-weight:700;font-size:.86rem;
+  text-align:right;width:78px;cursor:text;padding:0 0 1px}
+.fin-edit-bal:focus{outline:none;border-color:var(--accent)}
+/* register */
+.reg-tbl{width:100%;border-collapse:collapse;font-size:.82rem}
+.reg-tbl th{padding:7px 8px;background:var(--card-2);text-align:right;font-size:.7rem;font-weight:700;color:var(--muted-2);border-bottom:1px solid var(--line-2)}
+.reg-tbl th:first-child{text-align:left}
+.reg-tbl td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}
+.reg-tbl td:first-child{text-align:left;color:var(--muted);font-size:.74rem}
+.reg-tbl .reg-tot td{background:var(--card-2);font-weight:700;border-bottom:none}
+/* entries */
+.fin-empty{padding:18px 14px;text-align:center;color:var(--muted-2);font-size:.83rem}
+.entry-row{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--line);font-size:.82rem}
 .entry-row:last-child{border-bottom:none}
-.entry-row .badge{font-size:.66rem;font-weight:700;padding:2px 7px;border-radius:6px;font-family:'Archivo','Noto Sans Georgian';white-space:nowrap}
+.entry-row .badge{font-size:.62rem;font-weight:700;padding:2px 6px;border-radius:5px;white-space:nowrap}
 .entry-row .badge.in{background:rgba(63,185,80,.16);color:#9fe0a8}
 .entry-row .badge.ex{background:rgba(229,72,77,.16);color:#e5747a}
 .entry-row .cat{font-weight:600}
-.entry-row .lbl{color:var(--muted-2);font-size:.76rem}
+.entry-row .lbl{color:var(--muted-2);font-size:.74rem}
 .entry-row .amt{margin-left:auto;font-family:'Archivo','Noto Sans Georgian';font-weight:700;font-variant-numeric:tabular-nums}
-.entry-row .eb{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.9rem;
+.entry-row .eb{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.82rem;
   border:1px solid var(--line-2);color:var(--muted);transition:.15s}
 .entry-row .eb:hover{border-color:var(--text);color:var(--text)}
 .entry-row .eb.del:hover{border-color:#e5484d;color:#e5484d}
-.fin-empty{padding:22px 4px;text-align:center;color:var(--muted-2);font-size:.84rem}
 .seg{display:flex;gap:6px}
 .seg button{flex:1;padding:11px;border-radius:10px;border:1px solid var(--line-2);font-family:'Noto Sans Georgian','Archivo';
   font-weight:700;font-size:.86rem;color:var(--muted);transition:.18s}
@@ -205,17 +219,6 @@ input,select{font-family:inherit}
 .pay-tbc{color:#79e3df!important;border-color:rgba(30,181,176,.5)!important;background:rgba(30,181,176,.12)!important}
 .pay-cash{color:#9fe0a8!important;border-color:rgba(63,185,80,.5)!important;background:rgba(63,185,80,.12)!important}
 
-/* ---- income by channel ---- */
-.chan{margin-bottom:13px}
-.chan-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:5px}
-.chan-k{font-size:.86rem;color:var(--muted)}
-.chan-v{font-family:'Archivo','Noto Sans Georgian';font-weight:800;font-size:.96rem;font-variant-numeric:tabular-nums}
-.chan-bar{height:8px;border-radius:6px;background:var(--card-2);overflow:hidden}
-.chan-bar i{display:block;height:100%;width:0;border-radius:6px;transition:width .55s cubic-bezier(.22,.61,.36,1)}
-.chan-pct{font-size:.7rem;color:var(--muted-2);text-align:right;margin-top:3px;font-variant-numeric:tabular-nums}
-.chan-total{display:flex;justify-content:space-between;align-items:baseline;padding-top:12px;margin-top:8px;
-  border-top:2px solid var(--line-2);font-family:'Noto Sans Georgian','Archivo';font-weight:700}
-.chan-total .ct-v{font-family:'Archivo','Noto Sans Georgian';font-weight:800;font-size:1.1rem;font-variant-numeric:tabular-nums}
 
 /* ════════════ MOBILE ════════════ */
 @media(max-width:720px){
@@ -231,7 +234,6 @@ input,select{font-family:inherit}
   .curdate{order:4;flex:1 1 auto;min-width:0;text-align:center;font-size:.92rem}
   .add-btn{order:5;flex:1 1 46%;text-align:center;padding:12px}
   #barberFilter{order:6;flex:1 1 46%}
-  .fin-readonly{margin:0 0 14px}
   .cal-wrap{padding:14px 10px 60px;-webkit-overflow-scrolling:touch}
   .fin-wrap{padding:14px 12px 60px}
   .modal{padding:12px;align-items:flex-end}
@@ -289,22 +291,30 @@ input,select{font-family:inherit}
   </div>
   <div class="cal-wrap" id="calWrap"><div class="cal" id="cal"></div></div>
 
-  <!-- FINANCES (read-only) -->
+  <!-- FINANCES -->
   <div class="fin-wrap hide" id="finWrap">
-    <div class="fin-period">
-      <button id="perDay" class="on" data-per="day">დღე</button>
-      <button id="perMonth" data-per="month">თვე</button>
+    <div class="fin-topbar">
+      <div class="fin-period">
+        <button id="perDay" class="on" data-per="day">დღე</button>
+        <button id="perMonth" data-per="month">თვე</button>
+      </div>
+      <button class="add-btn" id="addEntryBtn" style="margin-left:auto">+ ჩანაწერი</button>
     </div>
-    <div class="fin-grid" style="margin-top:4px">
-      <div class="fin-card">
-        <h3>ბარბერების ხელფასები <span class="small" id="finSalHint"></span></h3>
+    <div class="fin-main-grid">
+      <div class="fin-col">
+        <div class="fin-col-head">ხელფასი</div>
         <table class="fin-table" id="finSalaries"></table>
       </div>
-      <div>
-        <div class="fin-card" style="margin-bottom:16px">
-          <h3>ხელით ჩანაწერები <button class="add-btn" id="addEntryBtn">+ დამატება</button></h3>
-          <div class="fin-sum" id="finEntriesSum"></div>
-          <div id="finEntries" style="margin-top:10px"></div>
+      <div class="fin-col">
+        <div class="fin-col-head">სარეზუმო</div>
+        <div id="finSummary"></div>
+      </div>
+      <div class="fin-col">
+        <div class="fin-col-head">სალაროდან გასვლა <span id="finRegHead" style="font-size:.72rem;font-weight:400;color:var(--muted)"></span></div>
+        <div id="finRegister"></div>
+        <div style="border-top:1px solid var(--line-2);padding:4px 0 0">
+          <div style="padding:7px 12px 5px;font-family:'Noto Sans Georgian','Archivo';font-weight:700;font-size:.72rem;color:var(--muted-2);text-transform:uppercase;letter-spacing:.04em">ყველა ჩანაწერი</div>
+          <div id="finEntries"></div>
         </div>
       </div>
     </div>
@@ -392,8 +402,8 @@ input,select{font-family:inherit}
   const dayHeight=(CLOSE-OPEN)*60*PPM;
   let barbers=[], services=[], curDate=new Date(); curDate.setHours(0,0,0,0);
   let view='cal', finPeriod='day', dayBookings=[], dayHoursMap={}, editId=null, eKind='income';
-  const INCOME_CATS=['პროდუქცია','ყავა','დაბანა','სასმელი','სალონი','სხვა შემოსავალი'];
-  const EXPENSE_CATS=['ხარჯი','ხელფასის გატანა','ქირა','კომუნალური','სხვა ხარჯი'];
+  const INCOME_CATS=['სალონი','პროდუქცია','ყავა','დაბანა','სასმელი','სხვა შემოსავალი'];
+  const EXPENSE_CATS=['ხარჯი','განაღდება','ჰარიცხვა','პროდუქცია','ყავა','დაბანა','სასმელი','ქირა','კომუნალური','სხვა ხარჯი'];
   const PAY_LABEL={cash:'ქეში',bog:'საქართველოს ბანკი',tbc:'თიბისი ბანკი'};
   const money = n => (Math.round((+n||0)*100)/100).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:2})+' ₾';
   const monthName = d => d.toLocaleDateString('ka-GE',{month:'long',year:'numeric'});
@@ -558,8 +568,8 @@ input,select{font-family:inherit}
 
   function esc(s){ return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-  /* ════════════ FINANCES — barbers' salaries (read-only) + manual ledger ════════════ */
-  let finEntries=[];
+  /* ════════════ FINANCES ════════════ */
+  let finEntries=[], nashtEntryId=null;
   function finRange(){
     if(finPeriod==='month'){
       const s=new Date(curDate.getFullYear(),curDate.getMonth(),1);
@@ -574,54 +584,128 @@ input,select{font-family:inherit}
   async function renderFinance(){
     const {start,end,label}=finRange();
     $('curDate').textContent=label;
-    $('finSalHint').textContent='შესრულებული ჯავშნებიდან';
 
     const [bkR,enR]=await Promise.all([
-      sb.from('bookings').select('barber_id,services(price)')
+      sb.from('bookings').select('barber_id,payment_method,services(price)')
         .gte('starts_at',start+'T00:00:00').lt('starts_at',end+'T00:00:00').eq('status','done'),
       sb.from('finance_entries').select('*')
         .gte('entry_date',start).lt('entry_date',end)
-        .order('entry_date',{ascending:false}).order('created_at',{ascending:false})
+        .order('entry_date',{ascending:true}).order('created_at',{ascending:false})
     ]);
     if(bkR.error){ $('finSalaries').innerHTML=`<tbody><tr><td class="fin-empty">${esc(bkR.error.message)}</td></tr></tbody>`; return; }
-    const rows=bkR.data||[]; finEntries=enR.data||[];
+    const bks=bkR.data||[]; finEntries=enR.data||[];
 
+    // ── separate opening balance entry ──
+    const nashtE=finEntries.find(e=>e.category==='ნაშთი'&&e.kind==='income');
+    nashtEntryId=nashtE?nashtE.id:null;
+    const openBal=nashtE?+nashtE.amount:0;
+    const regular=finEntries.filter(e=>!(e.category==='ნაშთი'&&e.kind==='income'));
+
+    // ── barber salaries ──
     const agg={}; barbers.forEach(b=>agg[b.id]={count:0,gross:0});
-    rows.forEach(r=>{ const a=agg[r.barber_id]; if(a){ a.count++; a.gross+=(r.services&&r.services.price)||0; } });
-
-    // salary = barber's share; only the final amount is shown (no %, no totals revenue)
-    let salaryTotal=0, totalCount=0;
+    bks.forEach(bk=>{ const a=agg[bk.barber_id]; if(a){a.count++;a.gross+=((bk.services&&bk.services.price)||0);} });
+    let salaryTotal=0,totalCount=0;
     const salRows=barbers.map(b=>{
-      const a=agg[b.id], pct=(b.commission_pct==null?50:b.commission_pct), salary=a.gross*pct/100;
-      salaryTotal+=salary; totalCount+=a.count;
-      return `<tr>
-        <td class="nm">${esc(b.name_ka)}</td>
-        <td class="num">${a.count}</td>
-        <td class="num">${money(salary)}</td>
-      </tr>`;
+      const a=agg[b.id],pct=(b.commission_pct==null?50:b.commission_pct),sal=a.gross*pct/100;
+      salaryTotal+=sal; totalCount+=a.count;
+      return `<tr><td class="nm">${esc(b.name_ka)}</td><td class="num">${a.count}</td><td class="num">${money(sal)}</td></tr>`;
     }).join('');
     $('finSalaries').innerHTML=
-      `<thead><tr><th>ბარბერი</th><th>შესრ.</th><th>ხელფასი</th></tr></thead>
+      `<thead><tr><th>ბარბერი</th><th>შ.</th><th>ხელფ.</th></tr></thead>
        <tbody>${salRows}
-       <tr><td class="nm">ჯამი</td><td class="num">${totalCount}</td><td class="num">${money(salaryTotal)}</td></tr>
+       <tr style="font-weight:700"><td class="nm">ჯამი</td><td class="num">${totalCount}</td><td class="num">${money(salaryTotal)}</td></tr>
        </tbody>`;
 
-    // ── manual ledger: income / expense subtotal + list ──
-    let manualIncome=0, manualExpense=0;
-    finEntries.forEach(e=>{ if(e.kind==='income') manualIncome+=(+e.amount); else manualExpense+=(+e.amount); });
-    const r=(k,v,cls='')=>`<div class="row"><span class="k">${k}</span><span class="v ${cls}">${v}</span></div>`;
-    $('finEntriesSum').innerHTML=
-      r('დამატებითი შემოსავალი', money(manualIncome),'plus') +
-      r('ხარჯები', '– '+money(manualExpense),'minus');
+    // ── income by category (excluding ნაშთი) ──
+    const INC_CATS=['სალონი','პროდუქცია','ყავა','დაბანა','სასმელი'];
+    const incByCat={};
+    regular.filter(e=>e.kind==='income').forEach(e=>{ incByCat[e.category]=(incByCat[e.category]||0)+(+e.amount); });
+    const incTotal=Object.values(incByCat).reduce((a,b)=>a+b,0);
 
-    if(!finEntries.length){
-      $('finEntries').innerHTML='<p class="fin-empty">ჩანაწერი არ არის — დაამატე ხარჯი ან შემოსავალი</p>';
+    // ── expenses by category ──
+    const expByCat={};
+    regular.filter(e=>e.kind==='expense').forEach(e=>{ expByCat[e.category]=(expByCat[e.category]||0)+(+e.amount); });
+    const ganaghdeba=expByCat['განაღდება']||0;
+    const garicxva=expByCat['ჰარიცხვა']||0;
+    const genExp=Object.entries(expByCat).filter(([k])=>k!=='განაღდება'&&k!=='ჰარიცხვა').reduce((a,[,v])=>a+v,0);
+    const expTotal=Object.values(expByCat).reduce((a,b)=>a+b,0);
+
+    // ── payment methods from bookings ──
+    const cashT=bks.filter(b=>b.payment_method==='cash').reduce((a,b)=>a+((b.services&&b.services.price)||0),0);
+    const tbcT=bks.filter(b=>b.payment_method==='tbc').reduce((a,b)=>a+((b.services&&b.services.price)||0),0);
+    const bogT=bks.filter(b=>b.payment_method==='bog').reduce((a,b)=>a+((b.services&&b.services.price)||0),0);
+
+    // ── totals ──
+    const netInc=incTotal-salaryTotal-expTotal;
+    const closeBal=openBal+netInc;
+
+    // ── summary table ──
+    const sh=lbl=>`<tr class="s-head"><td colspan="2">${lbl}</td></tr>`;
+    const sr=(lbl,val,cls='',indent=false)=>
+      `<tr class="${cls}"><td${indent?' style="padding-left:22px;color:var(--muted)"':''}>${lbl}</td><td>${val}</td></tr>`;
+
+    $('finSummary').innerHTML=`<table class="fin-sum-tbl"><tbody>
+      ${sh('ნაშთი')}
+      <tr class="s-bal s-hi"><td>ნაშთი (გახსნა)</td><td><input class="fin-edit-bal" id="nashtIn" type="number" min="0" step="0.01" value="${openBal}" /></td></tr>
+      ${sh('შემოსავალი')}
+      ${sr('შემოსავლის ჯამი',money(incTotal),'s-total s-plus')}
+      ${INC_CATS.map(c=>sr(c,money(incByCat[c]||0),'',true)).join('')}
+      ${sh('გადახდა')}
+      ${sr('ქეში',money(cashT))}
+      ${sr('ბარათი',money(tbcT+bogT))}
+      ${sr('თბს',money(tbcT),'',true)}
+      ${sr('საქართველო',money(bogT),'',true)}
+      ${sh('გასვლა')}
+      ${sr('ხელფასი','– '+money(salaryTotal),'s-minus')}
+      ${sr('ხარჯი','– '+money(genExp),'s-minus')}
+      ${sr('განაღდება','– '+money(ganaghdeba),'s-minus')}
+      ${sr('ჰარიცხვა','– '+money(garicxva),'s-minus')}
+      ${sh('შედეგი')}
+      ${sr('სუფთა შემოსავა',money(netInc),'s-total '+(netInc>=0?'s-plus':'s-minus'))}
+      <tr class="s-bal"><td>ნაშთი (დახურვა)</td><td style="color:#9fe0ff">${money(closeBal)}</td></tr>
+    </tbody></table>`;
+
+    const nashtIn=$('nashtIn');
+    if(nashtIn) nashtIn.addEventListener('blur',async()=>{
+      const val=+nashtIn.value; if(isNaN(val)||val<0) return;
+      const dateStr=finPeriod==='month'?ymd(new Date(curDate.getFullYear(),curDate.getMonth(),1)):ymd(curDate);
+      if(nashtEntryId){
+        await sb.from('finance_entries').update({amount:val}).eq('id',nashtEntryId);
+      } else {
+        await sb.from('finance_entries').insert({entry_date:dateStr,kind:'income',category:'ნაშთი',label:null,amount:val});
+      }
+      renderFinance();
+    });
+
+    // ── register withdrawals (სალაროდან გასვლა) ──
+    const WD_CATS=['პროდუქცია','ყავა','დაბანა','სასმელი'];
+    const regEntries=regular.filter(e=>e.kind==='expense'&&WD_CATS.includes(e.category));
+    if(!regEntries.length){
+      $('finRegister').innerHTML='<p class="fin-empty">გასვლა არ არის</p>';
+      $('finRegHead').textContent='';
     } else {
-      $('finEntries').innerHTML=finEntries.map(e=>`
+      const tots={}; WD_CATS.forEach(c=>tots[c]=0);
+      regEntries.forEach(e=>{ tots[e.category]=(tots[e.category]||0)+(+e.amount); });
+      const grandTot=WD_CATS.reduce((a,c)=>a+(tots[c]||0),0);
+      $('finRegHead').textContent='– '+money(grandTot);
+      $('finRegister').innerHTML=`<table class="reg-tbl">
+        <thead><tr><th>თარიღი</th>${WD_CATS.map(c=>`<th>${c}</th>`).join('')}</tr></thead>
+        <tbody>
+          ${regEntries.map(e=>`<tr><td>${shortD(e.entry_date)}${e.label?' · '+esc(e.label):''}</td>${WD_CATS.map(c=>`<td>${c===e.category?money(+e.amount):''}</td>`).join('')}</tr>`).join('')}
+          <tr class="reg-tot"><td>ჯამი</td>${WD_CATS.map(c=>`<td>${money(tots[c])}</td>`).join('')}</tr>
+        </tbody></table>`;
+    }
+
+    // ── all entries list ──
+    if(!regular.length){
+      $('finEntries').innerHTML='<p class="fin-empty">ჩანაწერი არ არის</p>';
+    } else {
+      $('finEntries').innerHTML=regular.map(e=>`
         <div class="entry-row">
           <span class="badge ${e.kind==='income'?'in':'ex'}">${e.kind==='income'?'+':'–'}</span>
           <span class="cat">${esc(e.category)}</span>
-          <span class="lbl">${e.label?esc(e.label)+' · ':''}${shortD(e.entry_date)}</span>
+          ${e.label?`<span class="lbl">${esc(e.label)}</span>`:''}
+          <span class="lbl">${shortD(e.entry_date)}</span>
           <span class="amt">${money(e.amount)}</span>
           <button class="eb" data-edit="${e.id}" title="ჩასწორება">&#9998;</button>
           <button class="eb del" data-del="${e.id}" title="წაშლა">&times;</button>
