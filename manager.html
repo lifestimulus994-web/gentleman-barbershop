@@ -352,6 +352,7 @@ input,select,textarea{font-family:inherit}
     <div class="fld"><label>სახელი</label><input id="bName" placeholder="გიორგი"/></div>
     <div class="fld"><label>კომისია %</label><input id="bPct" type="number" min="0" max="100" value="50"/></div>
     <div class="fld"><label>რიგი</label><input id="bSort" type="number" value="1"/></div>
+    <div class="fld"><label>ფოტო</label><input id="bPhoto" type="file" accept="image/jpeg,image/png,image/webp"/></div>
     <div class="login-err" id="bErr"></div>
     <button class="btn" id="saveBarbBtn">შენახვა</button>
   </div>
@@ -836,17 +837,17 @@ async function tryAutoSave(barberId,slotMin){
   try{ svIds=JSON.parse(svcBtn?.dataset.svids||'[]'); }catch(err){}
   const bkid=(fnEl.dataset.bkid||'').trim();
 
-  if(!fn||!svIds.length) return;
+  if(!fn) return;
   if(!bkid&&!isSlotAvailable(barberId,Number(slotMin))) return;
 
   const name=ln?`${fn} ${ln}`:fn;
   const ds=ymd(curDate);
-  const resolved=resolveServices(svIds);
-  if(!resolved.duration) return;
+  const resolved=svIds.length?resolveServices(svIds):{price:0,duration:30,ids:[]};
+  const duration=resolved.duration||30;
 
   const m=Number(slotMin);
   const startsAt=`${ds}T${minToHHMM(m)}:00`;
-  const endsAt  =`${ds}T${minToHHMM(m+resolved.duration)}:00`;
+  const endsAt  =`${ds}T${minToHHMM(m+duration)}:00`;
 
   if(bkid){
     await sb.from('bookings').update({
@@ -1124,7 +1125,7 @@ function renderBarberMgmt(){
 }
 
 $('addBarbBtn').addEventListener('click',()=>{
-  $('bName').value=''; $('bPct').value='50'; $('bErr').textContent='';
+  $('bName').value=''; $('bPct').value='50'; $('bErr').textContent=''; $('bPhoto').value='';
   const nextSort=allBarbers.length?Math.max(...allBarbers.map(b=>b.sort||0))+1:1;
   $('bSort').value=nextSort;
   $('barbModal').classList.remove('hide');
@@ -1137,7 +1138,21 @@ $('saveBarbBtn').addEventListener('click',async()=>{
   const pct =Number($('bPct').value);
   const sort=Number($('bSort').value);
   if(!name){ $('bErr').textContent='შეიყვანეთ სახელი'; return; }
-  const {error}=await sb.from('barbers').insert({name_ka:name,name_en:name,commission_pct:pct,sort,active:true});
+  $('saveBarbBtn').disabled=true; $('bErr').textContent='';
+
+  let photoUrl=null;
+  const file=$('bPhoto').files[0];
+  if(file){
+    const ext=file.name.split('.').pop().toLowerCase();
+    const path=`${Date.now()}.${ext}`;
+    const {error:upErr}=await sb.storage.from('barber-photos').upload(path,file,{upsert:true});
+    if(upErr){ $('bErr').textContent='ფოტოს ატვირთვა ვერ მოხდა: '+upErr.message; $('saveBarbBtn').disabled=false; return; }
+    const {data:{publicUrl}}=sb.storage.from('barber-photos').getPublicUrl(path);
+    photoUrl=publicUrl;
+  }
+
+  const {error}=await sb.from('barbers').insert({name_ka:name,name_en:name,commission_pct:pct,sort,active:true,photo_url:photoUrl});
+  $('saveBarbBtn').disabled=false;
   if(error){ $('bErr').textContent='შეცდომა: '+error.message; return; }
   $('barbModal').classList.add('hide');
   await loadMeta(); renderAll(); await loadAllBarbers();
