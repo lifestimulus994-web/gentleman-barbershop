@@ -216,6 +216,16 @@ input,select,textarea{font-family:inherit}
   font-weight:700;font-size:.82rem;cursor:pointer;transition:.2s}
 .hrs-btn-muted:hover{border-color:var(--text);color:var(--text)}
 
+/* toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--card);border:1px solid var(--line);border-radius:10px;
+  padding:10px 20px;font-size:.84rem;font-family:'Noto Sans Georgian','Archivo';
+  box-shadow:0 4px 20px rgba(0,0,0,.4);z-index:9999;
+  transition:transform .25s,opacity .25s;opacity:0;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast.err{border-color:#e5747a;color:#e5747a}
+.toast.ok{border-color:var(--ok);color:var(--ok)}
+
 /* barber management */
 .barb-mgmt-wrap{margin:18px 0;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
 .barb-mgmt-head{padding:10px 14px;font-family:'Noto Sans Georgian','Archivo';font-weight:700;font-size:.86rem;
@@ -386,6 +396,8 @@ input,select,textarea{font-family:inherit}
 <!-- ══ SERVICE PICKER DROPDOWN (shared) ══════════════ -->
 <div id="svcDrop" class="svc-drop hide"></div>
 
+<div class="toast" id="toast"></div>
+
 <script src="js/config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -427,6 +439,16 @@ function fmt(n){
 }
 
 function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+
+/* ── Toast ── */
+let _toastTimer=null;
+function toast(msg,type='ok'){
+  const el=$('toast'); if(!el) return;
+  el.textContent=msg;
+  el.className=`toast show ${type}`;
+  clearTimeout(_toastTimer);
+  _toastTimer=setTimeout(()=>el.classList.remove('show'),3000);
+}
 
 /* ── State ── */
 let curDate = new Date(); curDate.setHours(0,0,0,0);
@@ -565,6 +587,17 @@ async function showApp(){
   await loadDay();
   renderAll();
   await loadAllBarbers();
+
+  /* Realtime sync — refresh when any booking/finance changes from any source */
+  sb.channel('mgr-sync')
+    .on('postgres_changes',{event:'*',schema:'public',table:'bookings'},async()=>{
+      if(Object.keys(saveTimers).length>0) return; // user is typing, skip
+      await loadDay(); renderSchedule(); renderFinance();
+    })
+    .on('postgres_changes',{event:'*',schema:'public',table:'finance_entries'},async()=>{
+      await loadDay(); renderFinance();
+    })
+    .subscribe();
 }
 
 /* ═══════════════════════════════════════════
@@ -755,7 +788,7 @@ function attachPriceListeners(){
       const calcP=Number(inp.dataset.calc);
       const custom=(val===''||Number(val)===calcP)?null:Number(val);
       const {error}=await sb.from('bookings').update({custom_price:custom}).eq('id',bkid);
-      if(error){ console.error('price update error:',error); return; }
+      if(error){ toast('ფასი ვერ შეინახა: '+error.message,'err'); return; }
       inp.classList.toggle('price-custom',custom!==null);
       const bk=bookings.find(x=>x.id===bkid);
       if(bk) bk.custom_price=custom;
@@ -768,12 +801,22 @@ function attachPriceListeners(){
    SCHEDULE EVENTS (delegation)
 ═══════════════════════════════════════════ */
 /* input autosave trigger */
-$('schedBody').addEventListener('input',e=>{
+/* Enter key → save new booking */
+$('schedBody').addEventListener('keydown',e=>{
+  if(e.key!=='Enter') return;
   const el=e.target;
-  if(!el.dataset.bid) return;
+  if(!el.dataset.bid||!el.classList.contains('ci')) return;
+  e.preventDefault();
+  tryAutoSave(el.dataset.bid,el.dataset.slot);
+});
+
+/* existing booking field change → auto-update on blur */
+$('schedBody').addEventListener('change',e=>{
+  const el=e.target;
+  if(!el.dataset.bid||!el.dataset.bkid) return;
   const key=`${el.dataset.bid}_${el.dataset.slot}`;
   clearTimeout(saveTimers[key]);
-  saveTimers[key]=setTimeout(()=>tryAutoSave(el.dataset.bid,el.dataset.slot),800);
+  saveTimers[key]=setTimeout(()=>tryAutoSave(el.dataset.bid,el.dataset.slot),300);
 });
 
 /* price inputs — direct handlers attached after each render (see attachPriceListeners) */
@@ -827,12 +870,13 @@ $('schedBody').addEventListener('click', async e=>{
       const dur=resolved.duration||30;
       const m=Number(slot);
       const customPrice=(rawPrice!==null&&rawPrice!==resolved.price)?rawPrice:null;
-      const row={barber_id:bid,service_ids:svIds,customer_name:name,customer_phone:ph||null,
+      const row={barber_id:bid,service_id:svIds[0]||null,service_ids:svIds,customer_name:name,customer_phone:ph||null,
         starts_at:`${ds}T${minToHHMM(m)}:00`,ends_at:`${ds}T${minToHHMM(m+dur)}:00`,
         status:'done',payment_method:pm};
       if(customPrice!==null) row.custom_price=customPrice;
       const {error}=await sb.from('bookings').insert(row);
-      if(error){ console.error('quick-pay error:',error); return; }
+      if(error){ toast('შეცდომა: '+error.message,'err'); console.error('quick-pay:',error); return; }
+      toast('✓ ჩაწერილია');
       await loadDay(); renderSchedule(); renderFinance();
       return;
     }
@@ -844,7 +888,8 @@ $('schedBody').addEventListener('click', async e=>{
     const {error}=await sb.from('bookings')
       .update({payment_method:newPm, status:newPm?'done':'confirmed'})
       .eq('id',bkid);
-    if(error){ console.error('payment update error:',error); return; }
+    if(error){ toast('შეცდომა: '+error.message,'err'); return; }
+    toast('✓ გადახდა დაფიქსირდა');
     await loadDay(); renderSchedule(); renderFinance();
     return;
   }
@@ -853,7 +898,7 @@ $('schedBody').addEventListener('click', async e=>{
   if(del){
     if(!confirm('წაიშალოს ჯავშანი?')) return;
     const {error}=await sb.from('bookings').update({status:'cancelled'}).eq('id',del.dataset.bkid);
-    if(error){ console.error('delete error:',error); return; }
+    if(error){ toast('წაშლა ვერ მოხდა: '+error.message,'err'); return; }
     await loadDay(); renderSchedule(); renderFinance();
   }
 });
@@ -882,16 +927,18 @@ async function tryAutoSave(barberId,slotMin){
   const endsAt  =`${ds}T${minToHHMM(m+duration)}:00`;
 
   if(bkid){
-    await sb.from('bookings').update({
+    const {error:upErr}=await sb.from('bookings').update({
       customer_name:name,customer_phone:ph||null,service_ids:svIds,ends_at:endsAt
     }).eq('id',bkid);
+    if(upErr){ toast('განახლება ვერ მოხდა: '+upErr.message,'err'); return; }
   } else {
     const {error}=await sb.from('bookings').insert({
-      barber_id:barberId,service_ids:svIds,
+      barber_id:barberId,service_id:svIds[0]||null,service_ids:svIds,
       customer_name:name,customer_phone:ph||null,
       starts_at:startsAt,ends_at:endsAt,status:'confirmed'
     });
-    if(error){ console.error('booking insert:',error); return; }
+    if(error){ toast('ჩაწერა ვერ მოხდა: '+error.message,'err'); console.error('autosave:',error); return; }
+    toast('✓ ჩაწერილია');
   }
 
   await loadDay(); renderSchedule(); renderFinance();
