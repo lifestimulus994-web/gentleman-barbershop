@@ -56,6 +56,19 @@ input,select,textarea{font-family:inherit}
   font-family:'Noto Sans Georgian','Archivo';font-weight:700;font-size:.78rem;color:#c8caf6;transition:.2s;white-space:nowrap}
 .add-btn:hover{background:rgba(99,102,241,.30)}
 
+/* ── Mobile tabs ── */
+.mob-tabs{display:none}
+@media(max-width:700px){
+  .mob-tabs{display:flex;position:sticky;top:0;z-index:19;border-bottom:1px solid var(--line);background:var(--bg)}
+  .mob-tab{flex:1;padding:11px 0;font-family:'Noto Sans Georgian','Archivo';font-weight:700;font-size:.82rem;
+    color:var(--muted);border-bottom:2px solid transparent;transition:.15s}
+  .mob-tab.active{color:var(--text);border-bottom-color:var(--accent)}
+  .sched-wrap{max-height:calc(100vh - 106px)}
+  .fin-wrap{display:none}
+  .fin-wrap.mob-show{display:block;max-height:calc(100vh - 106px);overflow:auto}
+  .sched-wrap.mob-hide{display:none}
+}
+
 /* ── Schedule table ── */
 .sched-wrap{overflow:auto;max-height:calc(100vh - 58px);margin:0;background:var(--bg-2);border-bottom:1px solid var(--line)}
 #sched{border-collapse:collapse;min-width:max-content;width:100%}
@@ -279,6 +292,12 @@ input,select,textarea{font-family:inherit}
     <button class="logout" id="logoutBtn">გასვლა</button>
   </div>
 
+  <!-- Mobile tab bar -->
+  <div class="mob-tabs" id="mobTabs">
+    <button class="mob-tab active" id="tabSched">ცხრილი</button>
+    <button class="mob-tab" id="tabFin">ფინანსები</button>
+  </div>
+
   <!-- Schedule spreadsheet -->
   <div class="sched-wrap" id="schedWrap">
     <table id="sched">
@@ -288,7 +307,7 @@ input,select,textarea{font-family:inherit}
   </div>
 
   <!-- Financial summary -->
-  <div class="fin-wrap">
+  <div class="fin-wrap" id="finWrap">
     <div class="fin-bar">
       <span class="fin-ttl">ფინანსური სარეზუმო — <span id="finDateLbl"></span></span>
       <button class="add-btn" id="addEntryBtn">+ ჩანაწერი</button>
@@ -1245,6 +1264,16 @@ function renderAll(){
   renderSchedule();
   renderFinance();
 }
+
+/* ── Mobile tabs ── */
+$('tabSched').addEventListener('click',()=>{
+  $('tabSched').classList.add('active'); $('tabFin').classList.remove('active');
+  $('schedWrap').classList.remove('mob-hide'); $('finWrap').classList.remove('mob-show');
+});
+$('tabFin').addEventListener('click',()=>{
+  $('tabFin').classList.add('active'); $('tabSched').classList.remove('active');
+  $('finWrap').classList.add('mob-show'); $('schedWrap').classList.add('mob-hide');
+});
 
 })();
 </script>
