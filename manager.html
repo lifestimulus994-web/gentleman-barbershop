@@ -673,17 +673,15 @@ async function loadDay(){
 }
 
 /* ═══════════════════════════════════════════
-   SLOT MAP
+   SLOT MAP — start-only, no span blocking
 ═══════════════════════════════════════════ */
 function buildSlotMaps(){
   const maps={};
   barbers.forEach(b=>{ maps[b.id]={}; });
   bookings.forEach(bk=>{
     if(!maps[bk.barber_id]) return;
-    const st=dtToMin(bk.starts_at), en=dtToMin(bk.ends_at);
-    for(let m=st; m<en; m+=15){
-      maps[bk.barber_id][m]={bk,isStart:m===st};
-    }
+    const st=dtToMin(bk.starts_at);
+    maps[bk.barber_id][st]={bk,isStart:true};
   });
   return maps;
 }
@@ -733,11 +731,7 @@ function renderSchedule(){
     barbers.forEach(b=>{
       const sd=slotMaps[b.id][slotMin];
 
-      if(sd&&!sd.isStart){
-        const parts=(sd.bk.customer_name||'').split(' ');
-        body+=`<td class="td-cont" colspan="6"><span class="cont-bar">${esc(parts[0]||'')}</span></td>`;
-        return;
-      }
+      /* continuation rows removed — each slot is independent */
 
       const bk=sd?.bk;
       const available=isSlotAvailable(b.id,slotMin);
