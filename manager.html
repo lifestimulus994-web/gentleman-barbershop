@@ -1215,8 +1215,9 @@ function renderBarberMgmt(){
   });
   $('barbMgmtList').querySelectorAll('.barb-del').forEach(btn=>{
     btn.addEventListener('click',async()=>{
-      if(!confirm('ბარბერი გათიშდეს? (მონაცემები შეინახება)')) return;
-      await sb.from('barbers').update({active:false}).eq('id',btn.dataset.bid);
+      if(!confirm('ბარბერი სამუდამოდ წაიშალოს?')) return;
+      const {error}=await sb.from('barbers').delete().eq('id',btn.dataset.bid);
+      if(error){ toast('წაშლა ვერ მოხდა: '+error.message,'err'); return; }
       await loadMeta(); renderAll(); await loadAllBarbers();
     });
   });
