@@ -86,6 +86,8 @@ input,select,textarea{font-family:inherit}
   color:var(--muted);margin:1px;transition:.12s;line-height:1.5}
 .pbtn:hover{border-color:var(--ok);color:var(--ok)}
 .pbtn.p-on{background:rgba(63,185,80,.18);border-color:var(--ok);color:var(--ok);font-weight:700}
+.td-pay-empty .pbtn{opacity:.18;pointer-events:auto}
+.td-pay-empty:hover .pbtn{opacity:.7}
 .del-btn{padding:1px 5px;font-size:.65rem;border-radius:3px;border:1px solid rgba(229,72,77,.4);
   color:#e5747a;margin-left:3px;transition:.12s;line-height:1.5}
 .del-btn:hover{background:rgba(229,72,77,.15)}
@@ -726,17 +728,15 @@ function renderSchedule(){
           <button class="svc-disp${svIds.length?'':' empty'}" ${da} data-svids="${svidsJson}">${esc(dispText)||'სერვ.'}</button>
         </td>
         <td class="td-price${dc}">
-          ${bk?`<input class="price-inp${isCustom?' price-custom':''}" type="number" min="0" step="1"
-            value="${dispP}" placeholder="${calcP}"
-            data-bkid="${esc(bkid)}" data-calc="${calcP}" title="ფასის კორექცია">`:''}
+          <input class="price-inp${isCustom?' price-custom':''}" type="number" min="0" step="1"
+            value="${bk?(dispP??''):''}" placeholder="${calcP||''}"
+            ${da} data-calc="${calcP}" title="ფასის კორექცია">
         </td>
-        <td class="td-pay${dc}">
-          ${bk?`
-            <button class="pbtn${pm==='cash'?' p-on':''}" data-bkid="${esc(bkid)}" data-pm="cash">ქ</button>
-            <button class="pbtn${pm==='bog'?' p-on':''}" data-bkid="${esc(bkid)}" data-pm="bog">საქ</button>
-            <button class="pbtn${pm==='tbc'?' p-on':''}" data-bkid="${esc(bkid)}" data-pm="tbc">თბს</button>
-            <button class="del-btn" data-bkid="${esc(bkid)}" title="წაშლა">✕</button>
-          `:''}
+        <td class="td-pay${dc}${bk?'':' td-pay-empty'}">
+          <button class="pbtn${pm==='cash'?' p-on':''}" ${da} data-pm="cash">ქ</button>
+          <button class="pbtn${pm==='bog'?' p-on':''}" ${da} data-pm="bog">საქ</button>
+          <button class="pbtn${pm==='tbc'?' p-on':''}" ${da} data-pm="tbc">თბს</button>
+          ${bk?`<button class="del-btn" data-bkid="${esc(bkid)}" title="წაშლა">✕</button>`:''}
         </td>`;
     });
     body+='</tr>';
@@ -805,7 +805,39 @@ $('schedBody').addEventListener('click', async e=>{
   /* payment buttons */
   const pb=e.target.closest('.pbtn');
   if(pb){
-    const bkid=pb.dataset.bkid, pm=pb.dataset.pm;
+    const bkid=(pb.dataset.bkid||'').trim();
+    const pm=pb.dataset.pm;
+
+    if(!bkid){
+      /* no booking yet — read row, create booking + set payment in one step */
+      const bid=pb.dataset.bid, slot=pb.dataset.slot;
+      const sel=`[data-bid="${bid}"][data-slot="${slot}"]`;
+      const fn=(document.querySelector(sel+'[data-f="fn"]')?.value||'').trim();
+      const ln=(document.querySelector(sel+'[data-f="ln"]')?.value||'').trim();
+      const ph=(document.querySelector(sel+'[data-f="ph"]')?.value||'').trim();
+      const svcBtn=document.querySelector(sel+'.svc-disp');
+      let svIds=[];
+      try{ svIds=JSON.parse(svcBtn?.dataset.svids||'[]'); }catch{}
+      const priceInp=document.querySelector(sel+'.price-inp');
+      const rawPrice=priceInp&&priceInp.value!==''?Number(priceInp.value):null;
+      const name=ln?`${fn} ${ln}`:fn;
+      if(!name) return;
+      const ds=ymd(curDate);
+      const resolved=svIds.length?resolveServices(svIds):{price:0,duration:30};
+      const dur=resolved.duration||30;
+      const m=Number(slot);
+      const customPrice=(rawPrice!==null&&rawPrice!==resolved.price)?rawPrice:null;
+      const row={barber_id:bid,service_ids:svIds,customer_name:name,customer_phone:ph||null,
+        starts_at:`${ds}T${minToHHMM(m)}:00`,ends_at:`${ds}T${minToHHMM(m+dur)}:00`,
+        status:'done',payment_method:pm};
+      if(customPrice!==null) row.custom_price=customPrice;
+      const {error}=await sb.from('bookings').insert(row);
+      if(error){ console.error('quick-pay error:',error); return; }
+      await loadDay(); renderSchedule(); renderFinance();
+      return;
+    }
+
+    /* existing booking */
     const bk=bookings.find(x=>x.id===bkid);
     if(!bk){ console.warn('booking not found:',bkid); return; }
     const newPm=bk.payment_method===pm?null:pm;
