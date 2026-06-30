@@ -565,7 +565,7 @@ $('svcDrop').addEventListener('change',()=>{
   }
   const key=`${bid}_${slot}`;
   clearTimeout(saveTimers[key]);
-  saveTimers[key]=setTimeout(()=>tryAutoSave(bid,slot),800);
+  saveTimers[key]=setTimeout(()=>tryAutoSave(bid,slot,true),800);
 });
 
 document.addEventListener('click',e=>{
@@ -903,16 +903,21 @@ $('schedBody').addEventListener('click', async e=>{
       return;
     }
 
-    /* existing booking */
+    /* existing booking — optimistic update */
     const bk=bookings.find(x=>x.id===bkid);
     if(!bk){ console.warn('booking not found:',bkid); return; }
     const newPm=bk.payment_method===pm?null:pm;
+    const prevPm=bk.payment_method, prevStatus=bk.status;
+    bk.payment_method=newPm; bk.status=newPm?'done':'confirmed';
+    renderSchedule(); renderFinance();
     const {error}=await sb.from('bookings')
       .update({payment_method:newPm, status:newPm?'done':'confirmed'})
       .eq('id',bkid);
-    if(error){ toast('შეცდომა: '+error.message,'err'); return; }
-    toast('✓ გადახდა დაფიქსირდა');
-    await loadDay(); renderSchedule(); renderFinance();
+    if(error){
+      bk.payment_method=prevPm; bk.status=prevStatus;
+      renderSchedule(); renderFinance();
+      toast('შეცდომა: '+error.message,'err'); return;
+    }
     return;
   }
   /* delete */
@@ -1074,8 +1079,7 @@ function renderFinance(){
   const expTot    =expEntries.reduce((s,e)=>s+Number(e.amount),0);
 
   const totalRev=totIncome+manIncTot;
-  const netInc  =totalRev-empSal-expTot;
-  const closing =nashtAmount+netInc;
+  const closing =nashtAmount+cashInc+manIncTot-empSal-expTot;
 
   let sumHtml=`<table class="fin-sum-tbl">
     <tr class="s-head"><td colspan="2">ნაშთი</td></tr>
