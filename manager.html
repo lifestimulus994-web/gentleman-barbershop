@@ -814,6 +814,15 @@ function attachPriceListeners(){
    SCHEDULE EVENTS (delegation)
 ═══════════════════════════════════════════ */
 /* input autosave trigger */
+/* input auto-save (silent) — saves to DB without re-render so data isn't lost on navigation */
+$('schedBody').addEventListener('input',e=>{
+  const el=e.target;
+  if(!el.dataset.bid||!el.classList.contains('ci')) return;
+  const key=`${el.dataset.bid}_${el.dataset.slot}`;
+  clearTimeout(saveTimers[key]);
+  saveTimers[key]=setTimeout(()=>tryAutoSave(el.dataset.bid,el.dataset.slot,true),1500);
+});
+
 /* Enter key → save new booking */
 $('schedBody').addEventListener('keydown',e=>{
   if(e.key!=='Enter') return;
@@ -916,7 +925,7 @@ $('schedBody').addEventListener('click', async e=>{
   }
 });
 
-async function tryAutoSave(barberId,slotMin){
+async function tryAutoSave(barberId,slotMin,silent=false){
   const sel=`[data-bid="${barberId}"][data-slot="${slotMin}"]`;
   const fnEl=document.querySelector(sel+'[data-f="fn"]'); if(!fnEl) return;
   const fn=fnEl.value.trim();
@@ -944,17 +953,23 @@ async function tryAutoSave(barberId,slotMin){
       customer_name:name,customer_phone:ph||null,service_ids:svIds,ends_at:endsAt
     }).eq('id',bkid);
     if(upErr){ toast('განახლება ვერ მოხდა: '+upErr.message,'err'); return; }
+    if(!silent) await loadDay(), renderSchedule(), renderFinance();
   } else {
-    const {error}=await sb.from('bookings').insert({
+    const {data:ins,error}=await sb.from('bookings').insert({
       barber_id:barberId,service_id:svIds[0]||null,service_ids:svIds,
       customer_name:name,customer_phone:ph||null,
       starts_at:startsAt,ends_at:endsAt,status:'confirmed'
-    });
+    }).select('id').single();
     if(error){ toast('ჩაწერა ვერ მოხდა: '+error.message,'err'); console.error('autosave:',error); return; }
     toast('✓ ჩაწერილია');
+    if(!silent){
+      await loadDay(); renderSchedule(); renderFinance();
+    } else if(ins?.id){
+      /* silent save: patch bkid on DOM without re-render so future edits UPDATE not INSERT */
+      const s=`[data-bid="${barberId}"][data-slot="${slotMin}"]`;
+      document.querySelectorAll(s).forEach(el=>{ el.dataset.bkid=ins.id; });
+    }
   }
-
-  await loadDay(); renderSchedule(); renderFinance();
 }
 
 /* ═══════════════════════════════════════════
