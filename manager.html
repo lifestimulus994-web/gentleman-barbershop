@@ -77,31 +77,31 @@ input,select,textarea{font-family:inherit}
 #sched thead tr:last-child th{position:sticky;top:40px;z-index:3;background:var(--card)}
 .tc{position:sticky;left:0;z-index:2;background:var(--bg-2)}
 #sched thead .tc{z-index:6;background:var(--card-2)}
-.th-time{width:58px;min-width:58px;text-align:center;font-size:.7rem;color:var(--muted);padding:0 4px;height:40px;vertical-align:middle}
-.th-barber{text-align:center;font-family:'Noto Sans Georgian','Archivo';font-weight:700;font-size:.86rem;
+.th-time{width:66px;min-width:66px;text-align:center;font-size:.8rem;color:var(--muted);padding:0 4px;height:44px;vertical-align:middle}
+.th-barber{text-align:center;font-family:'Noto Sans Georgian','Archivo';font-weight:700;font-size:.96rem;
   padding:6px 6px 5px;border-bottom:2px solid var(--accent)!important;white-space:nowrap;vertical-align:middle}
-.th-sub{text-align:center;font-size:.68rem;color:var(--muted);font-weight:500;padding:5px 3px;white-space:nowrap;height:28px}
-.td-time{width:58px;min-width:58px;padding:0 6px;font-size:.72rem;color:var(--muted-2);
-  text-align:right;white-space:nowrap;height:34px;vertical-align:middle;background:var(--bg-2)}
+.th-sub{text-align:center;font-size:.76rem;color:var(--muted);font-weight:500;padding:5px 3px;white-space:nowrap;height:30px}
+.td-time{width:66px;min-width:66px;padding:0 6px;font-size:.82rem;color:var(--muted-2);
+  text-align:right;white-space:nowrap;height:40px;vertical-align:middle;background:var(--bg-2)}
 .row-hour .td-time{color:var(--text);font-weight:700}
 .row-hour{border-top:1px solid var(--line-2)!important}
 /* input cells */
-.td-in{padding:1px 2px;min-width:68px;vertical-align:middle}
-.td-pay{padding:2px 3px;min-width:102px;white-space:nowrap;vertical-align:middle;text-align:center}
+.td-in{padding:1px 2px;min-width:80px;vertical-align:middle}
+.td-pay{padding:2px 3px;min-width:116px;white-space:nowrap;vertical-align:middle;text-align:center}
 .td-done{background:rgba(63,185,80,.07)}
-.ci{display:block;width:100%;height:32px;padding:2px 5px;background:none;border:none;
-  color:var(--text);font-size:.78rem;font-family:inherit}
+.ci{display:block;width:100%;height:38px;padding:2px 6px;background:none;border:none;
+  color:var(--text);font-size:.9rem;font-family:inherit}
 .ci:focus{background:rgba(99,102,241,.10);outline:none}
 .ci::placeholder{color:var(--muted-2)}
-.ci-tel{min-width:88px}
+.ci-tel{min-width:100px}
 /* payment buttons */
-.pbtn{padding:2px 6px;font-size:.69rem;border-radius:4px;border:1px solid var(--line-2);
+.pbtn{padding:3px 8px;font-size:.78rem;border-radius:4px;border:1px solid var(--line-2);
   color:var(--muted);margin:1px;transition:.12s;line-height:1.5}
 .pbtn:hover{border-color:var(--ok);color:var(--ok)}
 .pbtn.p-on{background:rgba(63,185,80,.18);border-color:var(--ok);color:var(--ok);font-weight:700}
 .td-pay-empty .pbtn{opacity:.18;pointer-events:auto}
 .td-pay-empty:hover .pbtn{opacity:.7}
-.del-btn{padding:1px 5px;font-size:.65rem;border-radius:3px;border:1px solid rgba(229,72,77,.4);
+.del-btn{padding:2px 6px;font-size:.74rem;border-radius:3px;border:1px solid rgba(229,72,77,.4);
   color:#e5747a;margin-left:3px;transition:.12s;line-height:1.5}
 .del-btn:hover{background:rgba(229,72,77,.15)}
 /* continuation cell */
@@ -146,9 +146,9 @@ input,select,textarea{font-family:inherit}
 
 /* ── Price column ── */
 .td-price{padding:2px 4px;min-width:72px;vertical-align:middle;text-align:right}
-.price-inp{width:66px;height:28px;padding:2px 4px;background:none;border:none;
+.price-inp{width:76px;height:34px;padding:2px 4px;background:none;border:none;
   border-bottom:1px dashed transparent;color:var(--text);
-  font-family:'Archivo','Noto Sans Georgian';font-weight:700;font-size:.79rem;
+  font-family:'Archivo','Noto Sans Georgian';font-weight:700;font-size:.9rem;
   font-variant-numeric:tabular-nums;text-align:right;cursor:text;transition:.15s;border-radius:3px}
 .price-inp:focus{background:rgba(99,102,241,.10);border-bottom-color:var(--accent);outline:none}
 .price-inp.price-custom{color:#fbbf24}
@@ -164,7 +164,7 @@ input,select,textarea{font-family:inherit}
 .fin-col-head{padding:10px 14px;font-family:'Noto Sans Georgian','Archivo';font-weight:700;font-size:.86rem;
   border-bottom:1px solid var(--line-2);background:var(--card-2);display:flex;align-items:center;justify-content:space-between;gap:8px}
 /* salary table */
-.fin-table{width:100%;border-collapse:collapse;font-size:.84rem}
+.fin-table{width:100%;border-collapse:collapse;font-size:.94rem}
 .fin-table th{text-align:right;font-size:.68rem;color:var(--muted-2);padding:6px 8px;border-bottom:1px solid var(--line)}
 .fin-table th:first-child,.fin-table td:first-child{text-align:left}
 .fin-table td{padding:8px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
@@ -178,7 +178,7 @@ input,select,textarea{font-family:inherit}
 .fin-sum-tbl{width:100%;border-collapse:collapse}
 .fin-sum-tbl tr{border-bottom:1px solid var(--line)}
 .fin-sum-tbl tr:last-child{border-bottom:none}
-.fin-sum-tbl td{padding:7px 12px;font-size:.84rem;line-height:1.3}
+.fin-sum-tbl td{padding:8px 14px;font-size:.94rem;line-height:1.3}
 .fin-sum-tbl td:last-child{text-align:right;font-family:'Archivo','Noto Sans Georgian';font-weight:600;font-variant-numeric:tabular-nums;min-width:80px;white-space:nowrap}
 .fin-sum-tbl .s-head{background:var(--card-2)}
 .fin-sum-tbl .s-head td{font-size:.68rem;color:var(--muted-2);font-weight:700;padding:5px 12px;text-transform:uppercase}
@@ -192,7 +192,7 @@ input,select,textarea{font-family:inherit}
   text-align:right;width:80px;cursor:text;padding:0 0 1px}
 .fin-edit-bal:focus{outline:none;border-color:var(--accent)}
 /* entries */
-.entry-row{display:flex;align-items:center;gap:7px;padding:8px 12px;border-bottom:1px solid var(--line);font-size:.8rem}
+.entry-row{display:flex;align-items:center;gap:7px;padding:9px 13px;border-bottom:1px solid var(--line);font-size:.9rem}
 .entry-row:last-child{border-bottom:none}
 .badge{font-size:.6rem;font-weight:700;padding:2px 5px;border-radius:4px;white-space:nowrap}
 .badge.in{background:rgba(63,185,80,.16);color:#9fe0a8}
