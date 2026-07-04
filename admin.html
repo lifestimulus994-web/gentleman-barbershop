@@ -385,6 +385,26 @@ input,select{font-family:inherit}
   const money = n => (Math.round((+n||0)*100)/100).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:2})+' ₾';
   const monthName = d => d.toLocaleDateString('ka-GE',{month:'long',year:'numeric'});
 
+  /* price of a booking — mirrors manager.html: honors custom_price, multi-service combos and package pricing */
+  function getBookingIds(bk){
+    if(bk.service_ids && bk.service_ids.length) return bk.service_ids;
+    if(bk.service_id) return [bk.service_id];
+    return [];
+  }
+  function resolveServicesPrice(ids){
+    if(!ids||!ids.length) return 0;
+    const pkg=services.find(s=>
+      s.combo_of && s.combo_of.length===ids.length &&
+      ids.every(id=>s.combo_of.includes(id))
+    );
+    if(pkg) return pkg.price;
+    return ids.reduce((sum,id)=>{ const sv=services.find(s=>s.id===id); return sum+(sv?sv.price:0); },0);
+  }
+  function bkPrice(bk){
+    if(bk.custom_price!=null) return Number(bk.custom_price);
+    return resolveServicesPrice(getBookingIds(bk));
+  }
+
   /* ---------- auth ---------- */
   $('loginForm').addEventListener('submit', async e=>{
     e.preventDefault();
@@ -573,7 +593,7 @@ input,select{font-family:inherit}
     $('finSalHint').textContent='შესრულებული ჯავშნებიდან';
 
     const [bkR,enR]=await Promise.all([
-      sb.from('bookings').select('barber_id,payment_method,starts_at,services(price)')
+      sb.from('bookings').select('barber_id,payment_method,starts_at,service_id,service_ids,custom_price')
         .gte('starts_at',start+'T00:00:00').lt('starts_at',end+'T00:00:00').eq('status','done'),
       sb.from('finance_entries').select('*')
         .gte('entry_date',start).lt('entry_date',end)
@@ -584,12 +604,12 @@ input,select{font-family:inherit}
 
     // ── per-barber gross + salary ──
     const agg={}; barbers.forEach(b=>agg[b.id]={count:0,gross:0});
-    bk.forEach(r=>{ const a=agg[r.barber_id]; if(a){ a.count++; a.gross+=(r.services&&r.services.price)||0; } });
+    bk.forEach(r=>{ const a=agg[r.barber_id]; if(a){ a.count++; a.gross+=bkPrice(r); } });
 
     // ── income split by payment channel (cash / bog / tbc) ──
     const chan={cash:0,bog:0,tbc:0,none:0};
     bk.forEach(r=>{
-      const p=(r.services&&r.services.price)||0;
+      const p=bkPrice(r);
       const k=PAY_LABEL[r.payment_method]?r.payment_method:'none';
       chan[k]+=p;
     });
@@ -674,7 +694,7 @@ input,select{font-family:inherit}
     bk.forEach(r=>{
       const d=r.starts_at.split('T')[0];
       const o=(byDay[d]=byDay[d]||{count:0,income:0});
-      o.count++; o.income+=(r.services&&r.services.price)||0;
+      o.count++; o.income+=bkPrice(r);
     });
     (entries||[]).forEach(e=>{ if(e.kind==='income'){ (byDay[e.entry_date]=byDay[e.entry_date]||{count:0,income:0}).income+=(+e.amount); } });
     const days=Object.keys(byDay).sort();
