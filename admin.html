@@ -381,7 +381,7 @@ input,select{font-family:inherit}
   const dayHeight=(CLOSE-OPEN)*60*PPM;
   let barbers=[], services=[], curDate=new Date(); curDate.setHours(0,0,0,0);
   let view='cal', finPeriod='day', dayBookings=[], dayHoursMap={};
-  const PAY_LABEL={cash:'ქეში',bog:'საქართველოს ბანკი',tbc:'თიბისი ბანკი'};
+  const PAY_LABEL={cash:'ქეში',bog:'საქართველოს ბანკი',tbc:'თიბისი ბანკი',split:'გაყოფილი'};
   const money = n => (Math.round((+n||0)*100)/100).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:2})+' ₾';
   const monthName = d => d.toLocaleDateString('ka-GE',{month:'long',year:'numeric'});
 
@@ -403,6 +403,15 @@ input,select{font-family:inherit}
   function bkPrice(bk){
     if(bk.custom_price!=null) return Number(bk.custom_price);
     return resolveServicesPrice(getBookingIds(bk));
+  }
+  /* per-channel amounts — mirrors manager.html payShares */
+  function payShares(bk){
+    if(bk.payment_method==='split'){
+      return {cash:Number(bk.paid_cash)||0, bog:Number(bk.paid_bog)||0, tbc:Number(bk.paid_tbc)||0};
+    }
+    const sh={cash:0,bog:0,tbc:0};
+    if(bk.payment_method) sh[bk.payment_method]=bkPrice(bk);
+    return sh;
   }
 
   /* ---------- auth ---------- */
@@ -593,7 +602,7 @@ input,select{font-family:inherit}
     $('finSalHint').textContent='შესრულებული ჯავშნებიდან';
 
     const [bkR,enR]=await Promise.all([
-      sb.from('bookings').select('barber_id,payment_method,starts_at,service_id,service_ids,custom_price')
+      sb.from('bookings').select('barber_id,payment_method,paid_cash,paid_bog,paid_tbc,starts_at,service_id,service_ids,custom_price')
         .gte('starts_at',start+'T00:00:00').lt('starts_at',end+'T00:00:00').eq('status','done'),
       sb.from('finance_entries').select('*')
         .gte('entry_date',start).lt('entry_date',end)
@@ -609,9 +618,9 @@ input,select{font-family:inherit}
     // ── income split by payment channel (cash / bog / tbc) ──
     const chan={cash:0,bog:0,tbc:0,none:0};
     bk.forEach(r=>{
-      const p=bkPrice(r);
-      const k=PAY_LABEL[r.payment_method]?r.payment_method:'none';
-      chan[k]+=p;
+      if(!r.payment_method){ chan.none+=bkPrice(r); return; }
+      const sh=payShares(r);
+      chan.cash+=sh.cash; chan.bog+=sh.bog; chan.tbc+=sh.tbc;
     });
     renderChannels(chan);
     renderDailyIncome(bk, finEntries);
@@ -635,8 +644,16 @@ input,select{font-family:inherit}
        </tbody>`;
 
     // ── manual income / expense ──
-    let manualIncome=0, manualExpense=0;
-    finEntries.forEach(e=>{ if(e.kind==='income') manualIncome+=(+e.amount); else manualExpense+=(+e.amount); });
+    // „ნაშთი" entries are the manager's cash-drawer opening balance, not income.
+    // Salary-withdrawal expenses (განაღდება/ხელფასი) settle the accrued salaryTotal,
+    // so counting them again as an expense would double-subtract salaries.
+    const SAL_CATS=['განაღდება','ხელფასი'];
+    let manualIncome=0, manualExpense=0, salaryPayout=0;
+    finEntries.forEach(e=>{
+      if(e.kind==='income'){ if(e.category!=='ნაშთი') manualIncome+=(+e.amount); }
+      else if(SAL_CATS.includes(e.category)){ salaryPayout+=(+e.amount); }
+      else { manualExpense+=(+e.amount); }
+    });
     const totalIncome=serviceIncome+manualIncome;
     const net=totalIncome-salaryTotal-manualExpense;
 
@@ -646,6 +663,7 @@ input,select{font-family:inherit}
       (manualIncome>0 ? r('დამატებითი შემოსავალი', money(manualIncome),'plus') : '') +
       r('შემოსავლის ჯამი', money(totalIncome),'plus') +
       r('ხელფასები', '– '+money(salaryTotal),'minus') +
+      (salaryPayout>0 ? r('აქედან გაცემულია', money(salaryPayout)) : '') +
       r('ხარჯები', '– '+money(manualExpense),'minus') +
       `<div class="row total"><span class="k">სუფთა მოგება</span><span class="v net">${money(net)}</span></div>`;
 
@@ -657,7 +675,7 @@ input,select{font-family:inherit}
         <div class="entry-row">
           <span class="badge ${e.kind==='income'?'in':'ex'}">${e.kind==='income'?'+':'–'}</span>
           <span class="cat">${esc(e.category)}</span>
-          <span class="lbl">${e.label?esc(e.label)+' · ':''}${shortD(e.entry_date)}</span>
+          <span class="lbl">${({cash:'ქეში',bog:'საქ.',tbc:'თბს.'})[e.method||'cash']} · ${e.label?esc(e.label)+' · ':''}${shortD(e.entry_date)}</span>
           <span class="amt">${money(e.amount)}</span>
         </div>`).join('');
     }
@@ -696,7 +714,7 @@ input,select{font-family:inherit}
       const o=(byDay[d]=byDay[d]||{count:0,income:0});
       o.count++; o.income+=bkPrice(r);
     });
-    (entries||[]).forEach(e=>{ if(e.kind==='income'){ (byDay[e.entry_date]=byDay[e.entry_date]||{count:0,income:0}).income+=(+e.amount); } });
+    (entries||[]).forEach(e=>{ if(e.kind==='income'&&e.category!=='ნაშთი'){ (byDay[e.entry_date]=byDay[e.entry_date]||{count:0,income:0}).income+=(+e.amount); } });
     const days=Object.keys(byDay).sort();
     if(!days.length){ $('finDaily').innerHTML='<tbody><tr><td class="fin-empty">ამ თვეს შემოსავალი არ არის</td></tr></tbody>'; return; }
     const WD=['კვ','ორ','სა','ოთ','ხუ','პა','შა'];

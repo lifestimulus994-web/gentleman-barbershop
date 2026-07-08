@@ -104,6 +104,20 @@ input,select,textarea{font-family:inherit}
 .del-btn{padding:2px 6px;font-size:.74rem;border-radius:3px;border:1px solid rgba(229,72,77,.4);
   color:#e5747a;margin-left:3px;transition:.12s;line-height:1.5}
 .del-btn:hover{background:rgba(229,72,77,.15)}
+/* split-payment popover */
+.split-pop{position:fixed;z-index:100;background:#1e1e1e;border:1px solid rgba(255,255,255,.15);
+  border-radius:10px;padding:12px;min-width:200px;box-shadow:0 8px 32px rgba(0,0,0,.65)}
+.split-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.split-row label{flex:1;font-size:.78rem;color:#f3f1ee;font-weight:600}
+.split-row input{width:82px;padding:6px 8px;background:#2a2a2a;border:1px solid rgba(255,255,255,.18);
+  border-radius:7px;color:#fff;font-size:.88rem;text-align:right;font-variant-numeric:tabular-nums}
+.split-row input:focus{outline:none;border-color:var(--accent)}
+.split-sum{font-size:.74rem;color:#9a9893;margin-bottom:8px;text-align:right;font-variant-numeric:tabular-nums}
+.split-sum.ok{color:#3fb950}
+.split-sum.bad{color:#e5747a}
+.split-save{width:100%;padding:8px;border-radius:8px;background:#fff;color:#111;font-weight:700;
+  font-size:.82rem;font-family:'Noto Sans Georgian','Archivo'}
+.split-save:disabled{opacity:.5;cursor:not-allowed}
 /* continuation cell */
 .td-cont{padding:3px 7px;vertical-align:middle}
 .cont-bar{display:block;height:28px;border-radius:4px;background:rgba(99,102,241,.12);
@@ -367,7 +381,17 @@ input,select,textarea{font-family:inherit}
       </div>
     </div>
     <div class="fld"><label>აღწერა (არასავ.)</label><input id="eLabel" placeholder="სურვილისამებრ" /></div>
-    <div class="fld"><label>თანხა (₾)</label><input id="eAmt" type="number" min="0" step="0.01" placeholder="0.00" /></div>
+    <div class="row2">
+      <div class="fld"><label>თანხა (₾)</label><input id="eAmt" type="number" min="0" step="0.01" placeholder="0.00" /></div>
+      <div class="fld">
+        <label>წყარო</label>
+        <select id="eMethod">
+          <option value="cash">ქეში</option>
+          <option value="bog">საქ. ბანკი</option>
+          <option value="tbc">თიბისი</option>
+        </select>
+      </div>
+    </div>
     <div class="login-err" id="eErr"></div>
     <button class="btn" id="saveEntry">შენახვა</button>
   </div>
@@ -414,6 +438,9 @@ input,select,textarea{font-family:inherit}
 
 <!-- ══ SERVICE PICKER DROPDOWN (shared) ══════════════ -->
 <div id="svcDrop" class="svc-drop hide"></div>
+
+<!-- ══ SPLIT PAYMENT POPOVER ══════════════════════════ -->
+<div id="splitPop" class="split-pop hide"></div>
 
 <div class="toast" id="toast"></div>
 
@@ -513,6 +540,16 @@ function bkPrice(bk){
   return resolveServices(getBookingIds(bk)).price;
 }
 
+/* how much of a booking's payment landed in each channel */
+function payShares(bk){
+  if(bk.payment_method==='split'){
+    return {cash:Number(bk.paid_cash)||0, bog:Number(bk.paid_bog)||0, tbc:Number(bk.paid_tbc)||0};
+  }
+  const sh={cash:0,bog:0,tbc:0};
+  if(bk.payment_method) sh[bk.payment_method]=bkPrice(bk);
+  return sh;
+}
+
 /* ── Availability ── */
 function isSlotAvailable(barberId, slotMin){
   if(daysOffSet.has(barberId)) return false;
@@ -577,6 +614,64 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Escape'&&svcDropTarget) closeSvcDrop();
 });
 
+/* ── Split payment popover ── */
+let splitTarget=null;
+
+function openSplitPop(anchor,bk){
+  const price=bkPrice(bk);
+  const sh=payShares(bk);
+  if(!bk.payment_method) sh.cash=price; /* default: everything cash, manager corrects */
+  splitTarget={anchor,bkid:bk.id,price};
+  const pop=$('splitPop');
+  pop.innerHTML=`
+    <div class="split-row"><label>ქეში</label><input type="number" min="0" step="0.01" id="spCash" value="${sh.cash||''}"></div>
+    <div class="split-row"><label>საქ. ბანკი</label><input type="number" min="0" step="0.01" id="spBog" value="${sh.bog||''}"></div>
+    <div class="split-row"><label>თიბისი</label><input type="number" min="0" step="0.01" id="spTbc" value="${sh.tbc||''}"></div>
+    <div class="split-sum" id="spSum"></div>
+    <button class="split-save" id="spSave">შენახვა</button>`;
+  const rect=anchor.getBoundingClientRect();
+  pop.style.top=Math.min(rect.bottom+4,window.innerHeight-235)+'px';
+  pop.style.left=Math.min(rect.left,window.innerWidth-220)+'px';
+  pop.classList.remove('hide');
+  const upd=()=>{
+    const s=Math.round(((+$('spCash').value||0)+(+$('spBog').value||0)+(+$('spTbc').value||0))*100)/100;
+    const ok=Math.abs(s-price)<0.01;
+    $('spSum').textContent=`ჯამი: ${s} / ${price} ₾`;
+    $('spSum').className='split-sum '+(ok?'ok':'bad');
+    $('spSave').disabled=!ok;
+  };
+  pop.querySelectorAll('input').forEach(i=>i.addEventListener('input',upd));
+  upd();
+  $('spSave').addEventListener('click',saveSplit);
+}
+
+function closeSplitPop(){
+  $('splitPop').classList.add('hide');
+  splitTarget=null;
+}
+
+async function saveSplit(){
+  if(!splitTarget) return;
+  const c=+$('spCash').value||0, g=+$('spBog').value||0, t=+$('spTbc').value||0;
+  const {bkid}=splitTarget;
+  const {error}=await sb.from('bookings').update({
+    payment_method:'split',status:'done',paid_cash:c,paid_bog:g,paid_tbc:t
+  }).eq('id',bkid);
+  if(error){ toast('შეცდომა: '+error.message,'err'); return; }
+  closeSplitPop();
+  toast('✓ გაყოფილი გადახდა შენახულია');
+  await loadDay(); renderSchedule(); renderFinance();
+}
+
+document.addEventListener('click',e=>{
+  if(!splitTarget) return;
+  if($('splitPop').contains(e.target)||e.target.closest('.pbtn[data-pm="split"]')) return;
+  closeSplitPop();
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&splitTarget) closeSplitPop();
+});
+
 /* ═══════════════════════════════════════════
    AUTH
 ═══════════════════════════════════════════ */
@@ -634,7 +729,7 @@ $('todayBtn').addEventListener('click',()=>{ curDate=new Date(); curDate.setHour
 async function changeDay(){
   updateDateLabel();
   Object.keys(saveTimers).forEach(k=>{ clearTimeout(saveTimers[k]); delete saveTimers[k]; });
-  closeSvcDrop();
+  closeSvcDrop(); closeSplitPop();
   await loadDay();
   renderAll();
 }
@@ -782,6 +877,7 @@ function renderSchedule(){
           <button class="pbtn${pm==='cash'?' p-on':''}" ${da} data-pm="cash">ქ</button>
           <button class="pbtn${pm==='bog'?' p-on':''}" ${da} data-pm="bog">საქ</button>
           <button class="pbtn${pm==='tbc'?' p-on':''}" ${da} data-pm="tbc">თბს</button>
+          <button class="pbtn${pm==='split'?' p-on':''}" ${da} data-pm="split" title="გაყოფილი გადახდა">½</button>
           ${bk?`<button class="del-btn" data-bkid="${esc(bkid)}" title="წაშლა">✕</button>`:''}
         </td>`;
     });
@@ -872,32 +968,34 @@ $('schedBody').addEventListener('click', async e=>{
   if(pb){
     const bkid=(pb.dataset.bkid||'').trim();
     const pm=pb.dataset.pm;
+    const bid=pb.dataset.bid, slot=pb.dataset.slot;
+
+    /* split payment — open the amounts popover */
+    if(pm==='split'){
+      if(splitTarget){
+        const same=splitTarget.anchor===pb;
+        closeSplitPop();
+        if(same) return;
+      }
+      let bk=bkid?bookings.find(x=>x.id===bkid):null;
+      if(!bk){
+        /* no booking yet — create it first (unpaid), then open popover */
+        const newId=await quickCreateFromRow(bid,slot,null);
+        if(!newId) return;
+        await loadDay(); renderSchedule(); renderFinance();
+        bk=bookings.find(x=>x.id===newId);
+        const btn=document.querySelector(`.pbtn[data-bid="${bid}"][data-slot="${slot}"][data-pm="split"]`);
+        if(bk&&btn) openSplitPop(btn,bk);
+        return;
+      }
+      openSplitPop(pb,bk);
+      return;
+    }
 
     if(!bkid){
       /* no booking yet — read row, create booking + set payment in one step */
-      const bid=pb.dataset.bid, slot=pb.dataset.slot;
-      const sel=`[data-bid="${bid}"][data-slot="${slot}"]`;
-      const fn=(document.querySelector(sel+'[data-f="fn"]')?.value||'').trim();
-      const ln=(document.querySelector(sel+'[data-f="ln"]')?.value||'').trim();
-      const ph=(document.querySelector(sel+'[data-f="ph"]')?.value||'').trim();
-      const svcBtn=document.querySelector(sel+'.svc-disp');
-      let svIds=[];
-      try{ svIds=JSON.parse(svcBtn?.dataset.svids||'[]'); }catch{}
-      const priceInp=document.querySelector(sel+'.price-inp');
-      const rawPrice=priceInp&&priceInp.value!==''?Number(priceInp.value):null;
-      const name=ln?`${fn} ${ln}`:fn;
-      if(!name) return;
-      const ds=ymd(curDate);
-      const resolved=svIds.length?resolveServices(svIds):{price:0,duration:30};
-      const dur=resolved.duration||30;
-      const m=Number(slot);
-      const customPrice=(rawPrice!==null&&rawPrice!==resolved.price)?rawPrice:null;
-      const row={barber_id:bid,service_id:svIds[0]||null,service_ids:svIds,customer_name:name,customer_phone:ph||null,
-        starts_at:`${ds}T${minToHHMM(m)}:00`,ends_at:`${ds}T${minToHHMM(m+dur)}:00`,
-        status:'done',payment_method:pm};
-      if(customPrice!==null) row.custom_price=customPrice;
-      const {error}=await sb.from('bookings').insert(row);
-      if(error){ toast('შეცდომა: '+error.message,'err'); console.error('quick-pay:',error); return; }
+      const newId=await quickCreateFromRow(bid,slot,pm);
+      if(!newId) return;
       toast('✓ ჩაწერილია');
       await loadDay(); renderSchedule(); renderFinance();
       return;
@@ -908,13 +1006,17 @@ $('schedBody').addEventListener('click', async e=>{
     if(!bk){ console.warn('booking not found:',bkid); return; }
     const newPm=bk.payment_method===pm?null:pm;
     const prevPm=bk.payment_method, prevStatus=bk.status;
+    const prevPaid={c:bk.paid_cash,g:bk.paid_bog,t:bk.paid_tbc};
     bk.payment_method=newPm; bk.status=newPm?'done':'confirmed';
+    bk.paid_cash=bk.paid_bog=bk.paid_tbc=null;
     renderSchedule(); renderFinance();
     const {error}=await sb.from('bookings')
-      .update({payment_method:newPm, status:newPm?'done':'confirmed'})
+      .update({payment_method:newPm, status:newPm?'done':'confirmed',
+               paid_cash:null, paid_bog:null, paid_tbc:null})
       .eq('id',bkid);
     if(error){
       bk.payment_method=prevPm; bk.status=prevStatus;
+      bk.paid_cash=prevPaid.c; bk.paid_bog=prevPaid.g; bk.paid_tbc=prevPaid.t;
       renderSchedule(); renderFinance();
       toast('შეცდომა: '+error.message,'err'); return;
     }
@@ -929,6 +1031,33 @@ $('schedBody').addEventListener('click', async e=>{
     await loadDay(); renderSchedule(); renderFinance();
   }
 });
+
+/* create a booking from a schedule row's inputs; pm=null → confirmed/unpaid, pm set → done/paid */
+async function quickCreateFromRow(bid,slot,pm){
+  const sel=`[data-bid="${bid}"][data-slot="${slot}"]`;
+  const fn=(document.querySelector(sel+'[data-f="fn"]')?.value||'').trim();
+  const ln=(document.querySelector(sel+'[data-f="ln"]')?.value||'').trim();
+  const ph=(document.querySelector(sel+'[data-f="ph"]')?.value||'').trim();
+  const svcBtn=document.querySelector(sel+'.svc-disp');
+  let svIds=[];
+  try{ svIds=JSON.parse(svcBtn?.dataset.svids||'[]'); }catch{}
+  const priceInp=document.querySelector(sel+'.price-inp');
+  const rawPrice=priceInp&&priceInp.value!==''?Number(priceInp.value):null;
+  const name=ln?`${fn} ${ln}`:fn;
+  if(!name) return null;
+  const ds=ymd(curDate);
+  const resolved=svIds.length?resolveServices(svIds):{price:0,duration:30};
+  const dur=resolved.duration||30;
+  const m=Number(slot);
+  const customPrice=(rawPrice!==null&&rawPrice!==resolved.price)?rawPrice:null;
+  const row={barber_id:bid,service_id:svIds[0]||null,service_ids:svIds,customer_name:name,customer_phone:ph||null,
+    starts_at:`${ds}T${minToHHMM(m)}:00`,ends_at:`${ds}T${minToHHMM(m+dur)}:00`,
+    status:pm?'done':'confirmed',payment_method:pm};
+  if(customPrice!==null) row.custom_price=customPrice;
+  const {data:ins,error}=await sb.from('bookings').insert(row).select('id').single();
+  if(error){ toast('შეცდომა: '+error.message,'err'); console.error('quick-pay:',error); return null; }
+  return ins?.id||null;
+}
 
 async function tryAutoSave(barberId,slotMin,silent=false){
   const sel=`[data-bid="${barberId}"][data-slot="${slotMin}"]`;
@@ -1068,18 +1197,29 @@ function renderFinance(){
 
   /* ── Summary ── */
   const totIncome=doneBks.reduce((s,bk)=>s+bkPrice(bk),0);
-  const cashInc  =doneBks.filter(b=>b.payment_method==='cash').reduce((s,bk)=>s+bkPrice(bk),0);
-  const bogInc   =doneBks.filter(b=>b.payment_method==='bog').reduce((s,bk)=>s+bkPrice(bk), 0);
-  const tbcInc   =doneBks.filter(b=>b.payment_method==='tbc').reduce((s,bk)=>s+bkPrice(bk), 0);
-  const unpaid   =doneBks.filter(b=>!b.payment_method).reduce((s,bk)=>s+bkPrice(bk),        0);
+  /* channel totals — split bookings contribute their per-method amounts */
+  let cashInc=0,bogInc=0,tbcInc=0,unpaid=0;
+  doneBks.forEach(bk=>{
+    if(!bk.payment_method){ unpaid+=bkPrice(bk); return; }
+    const sh=payShares(bk);
+    cashInc+=sh.cash; bogInc+=sh.bog; tbcInc+=sh.tbc;
+  });
 
   const manInc    =finEntries.filter(e=>e.kind==='income'&&e.category!=='ნაშთი');
   const manIncTot =manInc.reduce((s,e)=>s+Number(e.amount),0);
+  const manIncCash=manInc.filter(e=>(e.method||'cash')==='cash').reduce((s,e)=>s+Number(e.amount),0);
   const expEntries=finEntries.filter(e=>e.kind==='expense');
   const expTot    =expEntries.reduce((s,e)=>s+Number(e.amount),0);
+  const expCash   =expEntries.filter(e=>(e.method||'cash')==='cash').reduce((s,e)=>s+Number(e.amount),0);
+  const expBank   =expTot-expCash;
 
   const totalRev=totIncome+manIncTot;
-  const closing =nashtAmount+cashInc+manIncTot-empSal-expTot;
+  /* cash drawer: opening + cash in − cash out.
+     Salaries are NOT auto-deducted — they leave the drawer only when actually
+     withdrawn (a cash expense entry like „განაღდება"/„ხელფასი"). */
+  const closing =nashtAmount+cashInc+manIncCash-expCash;
+
+  const mLbl={cash:'ქეში',bog:'საქ.',tbc:'თბს.'};
 
   let sumHtml=`<table class="fin-sum-tbl">
     <tr class="s-head"><td colspan="2">ნაშთი</td></tr>
@@ -1089,22 +1229,28 @@ function renderFinance(){
 
   if(manInc.length){
     manInc.forEach(e=>{
-      sumHtml+=`<tr class="s-indent"><td>${esc(e.category)}${e.label?` · ${esc(e.label)}`:''}</td><td>${fmt(e.amount)}</td></tr>`;
+      sumHtml+=`<tr class="s-indent"><td>${esc(e.category)} <span style="font-size:.68rem;color:var(--muted-2)">${mLbl[e.method||'cash']}</span>${e.label?` · ${esc(e.label)}`:''}</td><td>${fmt(e.amount)}</td></tr>`;
     });
   }
 
   sumHtml+=`<tr class="s-total s-plus"><td>შემ. ჯამი</td><td>${fmt(totalRev)}</td></tr>
     <tr class="s-head"><td colspan="2">გადახდა</td></tr>
-    <tr><td>ქეში</td><td>${fmt(cashInc)}</td></tr>
-    <tr class="s-indent"><td>საქ.</td><td>${fmt(bogInc)}</td></tr>
+    <tr><td>ქეში</td><td>${fmt(cashInc)}</td></tr>`;
+
+  if(manIncCash>0) sumHtml+=`<tr class="s-indent"><td>ქეში (ხელით ჩანაწ.)</td><td>${fmt(manIncCash)}</td></tr>`;
+
+  sumHtml+=`<tr class="s-indent"><td>საქ.</td><td>${fmt(bogInc)}</td></tr>
     <tr class="s-indent"><td>თბს.</td><td>${fmt(tbcInc)}</td></tr>`;
 
   if(unpaid>0) sumHtml+=`<tr class="s-indent"><td>გადაუხდ.</td><td>${fmt(unpaid)}</td></tr>`;
 
   sumHtml+=`<tr class="s-head"><td colspan="2">გასვლა</td></tr>
-    <tr class="s-minus"><td>ხელფასი</td><td>– ${fmt(empSal)}</td></tr>
-    <tr class="s-minus"><td>ხარჯი</td><td>– ${fmt(expTot)}</td></tr>
-    <tr class="s-bal"><td>ნაშთი (დახ.)</td><td style="color:#9fe0ff">${fmt(closing)}</td></tr>
+    <tr class="s-minus"><td>ხარჯი (ქეში)</td><td>– ${fmt(expCash)}</td></tr>`;
+
+  if(expBank>0) sumHtml+=`<tr class="s-indent"><td>ხარჯი (ბანკი)</td><td>– ${fmt(expBank)}</td></tr>`;
+
+  sumHtml+=`<tr class="s-indent"><td title="ინფორმაციულია — ნაშთს აკლდება მხოლოდ განაღდებისას (ქეშის ხარჯის ჩანაწერით)">ხელფასი (დარიცხ.)</td><td>${fmt(empSal)}</td></tr>
+    <tr class="s-bal"><td title="გახსნის ნაშთი + ქეშის შემოსავალი − ქეშის ხარჯი">ნაშთი (დახ.)</td><td style="color:var(--accent)">${fmt(closing)}</td></tr>
   </table>`;
   $('finSummary').innerHTML=sumHtml;
 
@@ -1132,7 +1278,7 @@ function renderFinance(){
     entHtml+=`<div class="entry-row">
       <span class="badge ${cls}">${sign}</span>
       <span class="cat">${esc(e.category)}</span>
-      ${e.label?`<span class="lbl">${esc(e.label)}</span>`:''}
+      <span class="lbl">${mLbl[e.method||'cash']}${e.label?` · ${esc(e.label)}`:''}</span>
       <span class="amt">${fmt(e.amount)}</span>
       <button class="eb del" data-eid="${e.id}">✕</button>
     </div>`;
@@ -1150,7 +1296,7 @@ $('finEntries').addEventListener('click',async e=>{
    MANUAL ENTRY MODAL
 ═══════════════════════════════════════════ */
 $('addEntryBtn').addEventListener('click',()=>{
-  $('eKind').value='income';
+  $('eKind').value='income'; $('eMethod').value='cash';
   $('eCat').value=''; $('eLabel').value=''; $('eAmt').value=''; $('eErr').textContent='';
   $('entryModal').classList.remove('hide');
 });
@@ -1166,7 +1312,8 @@ $('saveEntry').addEventListener('click',async()=>{
   if(!amt||amt<=0){ $('eErr').textContent='შეიყვანეთ დადებითი თანხა'; return; }
   $('eErr').textContent='';
   await sb.from('finance_entries').insert({
-    entry_date:ymd(curDate),kind,category:cat,label:label||null,amount:amt
+    entry_date:ymd(curDate),kind,category:cat,label:label||null,amount:amt,
+    method:$('eMethod').value
   });
   $('entryModal').classList.add('hide');
   await loadDay(); renderFinance();
