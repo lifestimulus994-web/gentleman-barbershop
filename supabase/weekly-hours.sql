@@ -15,7 +15,7 @@ create policy "auth manage hours" on working_hours
 grant insert, update, delete on working_hours to authenticated;
 
 -- ─── One-time defaults ────────────────────────────────────────
---  თაზო & რუსლანი → 12:00–17:00, everyone else → 10:00–20:00.
+--  თაზო & რუსლანი → 12:00–17:00, everyone else → 11:00–20:00.
 --  Only updates EXISTING weekday rows, so each barber's weekly
 --  days off (missing rows) are preserved.
 update working_hours wh
@@ -24,7 +24,7 @@ from barbers b
 where b.id = wh.barber_id and b.name_ka in ('თაზო','რუსლანი');
 
 update working_hours wh
-set open_time = '10:00', close_time = '20:00'
+set open_time = '11:00', close_time = '20:00'
 from barbers b
 where b.id = wh.barber_id and b.name_ka not in ('თაზო','რუსლანი');
 

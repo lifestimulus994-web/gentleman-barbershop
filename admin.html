@@ -863,13 +863,20 @@ input,select{font-family:inherit}
   function closeHours(){ hrsModal.classList.add('hide'); }
   $('hClose').addEventListener('click',closeHours);
   hrsModal.addEventListener('click',e=>{ if(e.target===hrsModal) closeHours(); });
-  function openHours(barberId){
+  async function openHours(barberId){
     const b=barbers.find(x=>x.id===barberId); if(!b) return;
     const dh=dayHoursMap[barberId];
     hrsModal.dataset.barber=barberId;
     $('hSub').textContent=`${b.name_ka} · ${fmtDate(curDate)}`;
-    $('hOpen').value=(dh?dh.open:'11:00:00').slice(0,5);
-    $('hClose2').value=(dh?dh.close:'20:00:00').slice(0,5);
+    let open=dh?dh.open:null, close=dh?dh.close:null;
+    if(!open){
+      // no per-date override → prefill from the barber's weekly schedule
+      const {data:wh}=await sb.from('working_hours').select('open_time,close_time')
+        .eq('barber_id',barberId).eq('weekday',curDate.getDay()).maybeSingle();
+      open=wh?wh.open_time:'11:00:00'; close=wh?wh.close_time:'20:00:00';
+    }
+    $('hOpen').value=open.slice(0,5);
+    $('hClose2').value=close.slice(0,5);
     $('hErr').textContent='';
     hrsModal.classList.remove('hide');
   }

@@ -1161,7 +1161,7 @@ function openHoursModal(barberId){
   $('hrsBName').textContent=b.name_ka;
   $('hrsOffNote').classList.toggle('hide',!isOff);
   $('hrsTimeFields').style.opacity=isOff?'.4':'1';
-  $('hrsOpen').value =eff?(eff.open.slice(0,5)) :'10:00';
+  $('hrsOpen').value =eff?(eff.open.slice(0,5)) :'11:00';
   $('hrsClose').value=eff?(eff.close.slice(0,5)):'20:00';
   $('hrsErr').textContent='';
   $('hoursModal').classList.remove('hide');
@@ -1526,10 +1526,10 @@ $('saveBarbBtn').addEventListener('click',async()=>{
   const {data:newB,error}=await sb.from('barbers').insert({name_ka:name,name_en:name,commission_pct:pct,sort,active:true,photo_url:photoUrl}).select('id').single();
   $('saveBarbBtn').disabled=false;
   if(error){ $('bErr').textContent='შეცდომა: '+error.message; return; }
-  /* seed a default weekly schedule (7 days, 10–20) so the new barber is bookable */
+  /* seed a default weekly schedule (7 days, 11–20) so the new barber is bookable */
   if(newB?.id){
     await sb.from('working_hours').insert(
-      [0,1,2,3,4,5,6].map(wd=>({barber_id:newB.id,weekday:wd,open_time:'10:00:00',close_time:'20:00:00'}))
+      [0,1,2,3,4,5,6].map(wd=>({barber_id:newB.id,weekday:wd,open_time:'11:00:00',close_time:'20:00:00'}))
     );
   }
   $('barbModal').classList.add('hide');
