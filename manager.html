@@ -88,7 +88,13 @@ input,select,textarea{font-family:inherit}
 /* input cells */
 .td-in{padding:1px 2px;min-width:80px;vertical-align:middle}
 .td-pay{padding:2px 3px;min-width:116px;white-space:nowrap;vertical-align:middle;text-align:center}
+/* website bookings (manage_token) — blue tint; done-green wins the bg, blue bar stays */
+.td-site{background:rgba(37,99,235,.07)}
+.td-site-mark{box-shadow:inset 3px 0 0 #2563eb}
 .td-done{background:rgba(63,185,80,.07)}
+/* topbar legend */
+.site-legend{display:flex;align-items:center;gap:5px;font-size:.7rem;color:var(--muted);white-space:nowrap}
+.site-legend i{width:9px;height:9px;border-radius:2px;background:rgba(37,99,235,.5);border-left:2px solid #2563eb}
 .ci{display:block;width:100%;height:38px;padding:2px 6px;background:none;border:none;
   color:var(--text);font-size:.9rem;font-family:inherit}
 .ci:focus{background:rgba(99,102,241,.10);outline:none}
@@ -267,6 +273,17 @@ input,select,textarea{font-family:inherit}
 .barb-active-tog.is-active{background:rgba(99,102,241,.15);border-color:var(--accent);color:var(--accent)}
 .barb-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;padding:2px 6px}
 .barb-del:hover{color:#e5747a}
+/* weekly schedule editor */
+.wk-row{display:grid;grid-template-columns:minmax(0,1fr) auto 10px auto;align-items:center;gap:5px;padding:6px 0;border-bottom:1px solid var(--line)}
+.wk-row:last-child{border-bottom:none}
+.wk-row label{display:flex;align-items:center;gap:7px;font-size:.82rem;font-weight:600;cursor:pointer;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.wk-row input[type=checkbox]{width:15px;height:15px;accent-color:var(--accent);cursor:pointer;flex-shrink:0}
+.wk-row input[type=time]{width:92px;padding:5px 4px;background:var(--card-2);border:1px solid var(--line-2);border-radius:8px;color:var(--text);font-size:.8rem}
+.wk-row input[type=time]:disabled{opacity:.35}
+.wk-row .dash{text-align:center;color:var(--muted-2)}
+.wk-edit-btn{font-size:.72rem;padding:3px 9px;border-radius:5px;border:1px solid rgba(99,102,241,.45);
+  background:rgba(99,102,241,.10);color:var(--accent);cursor:pointer;transition:.15s;font-family:inherit;font-weight:600}
+.wk-edit-btn:hover{background:rgba(99,102,241,.22)}
 
 </style>
 </head>
@@ -303,6 +320,7 @@ input,select,textarea{font-family:inherit}
       <button id="nextDay" title="შემდეგი დღე">›</button>
     </div>
     <div class="spacer"></div>
+    <span class="site-legend"><i></i> საიტიდან</span>
     <button class="logout" id="logoutBtn">გასვლა</button>
   </div>
 
@@ -413,6 +431,20 @@ input,select,textarea{font-family:inherit}
   </div>
 </div>
 
+<!-- ══ WEEKLY SCHEDULE MODAL ══════════════════════════ -->
+<div class="modal hide" id="weekModal">
+  <div class="modal-card" style="max-width:380px">
+    <div class="modal-head">
+      <h2 id="wkBName"></h2>
+      <button class="x" id="closeWeekModal">&times;</button>
+    </div>
+    <p style="color:var(--muted);font-size:.78rem;margin-bottom:12px">კვირის მუდმივი გრაფიკი — ყოველდღე ავტომატურად მოქმედებს. კონკრეტული დღის შეცვლა ცხრილის სათაურიდან შეგიძლია.</p>
+    <div id="wkRows"></div>
+    <div class="login-err" id="wkErr"></div>
+    <button class="btn" id="saveWeekBtn">შენახვა</button>
+  </div>
+</div>
+
 <!-- ══ HOURS MODAL ════════════════════════════════════ -->
 <div class="modal hide" id="hoursModal">
   <div class="modal-card" style="max-width:340px">
@@ -500,7 +532,8 @@ function toast(msg,type='ok'){
 let curDate = new Date(); curDate.setHours(0,0,0,0);
 let barbers=[], services=[], servicesMap={};
 let bookings=[], finEntries=[];
-let dayHoursMap={}, daysOffSet=new Set();
+let dayHoursMap={}, weekHoursMap={}, daysOffSet=new Set();
+let weeklyAll={}; /* barber_id → [{weekday,open_time,close_time}] — for the weekly editor */
 let nashtEntryId=null, nashtAmount=0;
 const saveTimers={};
 let svcDropTarget=null;
@@ -551,10 +584,14 @@ function payShares(bk){
 }
 
 /* ── Availability ── */
+/* effective hours: per-date override → weekly default → null (weekly day off) */
+function effHours(barberId){
+  return dayHoursMap[barberId]||weekHoursMap[barberId]||null;
+}
 function isSlotAvailable(barberId, slotMin){
   if(daysOffSet.has(barberId)) return false;
-  const dh=dayHoursMap[barberId];
-  if(!dh) return true;
+  const dh=effHours(barberId);
+  if(!dh) return false;
   const open=timeStrToMin(dh.open), close=timeStrToMin(dh.close);
   return slotMin>=open && slotMin<close;
 }
@@ -749,18 +786,21 @@ async function loadMeta(){
 
 async function loadDay(){
   const ds=ymd(curDate);
-  const [{data:bks},{data:fe},{data:dhrs},{data:offs}]=await Promise.all([
+  const [{data:bks},{data:fe},{data:dhrs},{data:offs},{data:whrs}]=await Promise.all([
     sb.from('bookings').select('*')
       .gte('starts_at',ds+'T00:00:00').lt('starts_at',ds+'T23:59:59')
       .neq('status','cancelled'),
     sb.from('finance_entries').select('*').eq('entry_date',ds),
     sb.from('barber_day_hours').select('barber_id,open_time,close_time').eq('work_date',ds),
     sb.from('barber_days_off').select('barber_id').eq('off_date',ds),
+    sb.from('working_hours').select('barber_id,open_time,close_time').eq('weekday',curDate.getDay()),
   ]);
   bookings   =bks||[];
   finEntries =fe||[];
   dayHoursMap={};
   (dhrs||[]).forEach(r=>{ dayHoursMap[r.barber_id]={open:r.open_time,close:r.close_time}; });
+  weekHoursMap={};
+  (whrs||[]).forEach(r=>{ weekHoursMap[r.barber_id]={open:r.open_time,close:r.close_time}; });
   daysOffSet=new Set((offs||[]).map(o=>o.barber_id));
   const nash=finEntries.find(e=>e.category==='ნაშთი'&&e.kind==='income');
   nashtEntryId=nash?.id||null;
@@ -800,10 +840,12 @@ function renderSchedule(){
       availHtml=`<span class="avail-off-tag">❌ არ მუშაობს</span>
         <button class="off-toggle-btn on" data-offbid="${b.id}">✓ გახსნა</button>`;
     } else {
-      const hrsLabel=dh
-        ? `${dh.open.slice(0,5)}–${dh.close.slice(0,5)}`
-        : '+ საათები';
-      availHtml=`<button class="hours-edit-btn${dh?'':' no-hrs'}" data-hbid="${b.id}">${hrsLabel}</button>
+      const wh=weekHoursMap[b.id];
+      /* per-date override (accent) → weekly default (muted) → weekly day off */
+      const hrsLabel=dh ? `${dh.open.slice(0,5)}–${dh.close.slice(0,5)}`
+        : wh ? `${wh.open.slice(0,5)}–${wh.close.slice(0,5)}`
+        : 'დასვ. დღე';
+      availHtml=`<button class="hours-edit-btn${dh?'':' no-hrs'}" data-hbid="${b.id}" title="${dh?'დღის საათები (შეცვლილი)':wh?'კვირის გრაფიკი — დღისთვის შესაცვლელად დააჭირე':'კვირის გრაფიკით დასვენებაა — დღისთვის საათების დასაყენებლად დააჭირე'}">${hrsLabel}</button>
         <button class="off-toggle-btn" data-offbid="${b.id}">⛔ გამოტ.</button>`;
     }
     head+=`<th class="th-barber" colspan="6">${esc(b.name_ka)}<div class="barber-avail">${availHtml}</div></th>`;
@@ -837,6 +879,8 @@ function renderSchedule(){
       }
 
       const done  =bk?.status==='done';
+      const isSite=!!(bk&&bk.manage_token); /* website bookings carry manage_token */
+      const sc    =isSite?' td-site':'';
       const pm    =bk?.payment_method||'';
       const parts =(bk?.customer_name||'').split(' ');
       const fn    =parts[0]||'';
@@ -856,24 +900,24 @@ function renderSchedule(){
       const isCustom=bk&&bk.custom_price!=null;
 
       body+=`
-        <td class="td-in${dc}">
+        <td class="td-in${dc}${sc}${isSite?' td-site-mark':''}"${isSite?' title="საიტიდან დაჯავშნილი"':''}>
           <input class="ci" type="text" placeholder="სახ." value="${esc(fn)}" ${da} data-f="fn">
         </td>
-        <td class="td-in${dc}">
+        <td class="td-in${dc}${sc}">
           <input class="ci" type="text" placeholder="გვ." value="${esc(ln)}" ${da} data-f="ln">
         </td>
-        <td class="td-in${dc}">
+        <td class="td-in${dc}${sc}">
           <input class="ci ci-tel" type="tel" placeholder="ტელ." value="${esc(ph)}" ${da} data-f="ph">
         </td>
-        <td class="svc-cell${dc}">
+        <td class="svc-cell${dc}${sc}">
           <button class="svc-disp${svIds.length?'':' empty'}" ${da} data-svids="${svidsJson}">${esc(dispText)||'სერვ.'}</button>
         </td>
-        <td class="td-price${dc}">
+        <td class="td-price${dc}${sc}">
           <input class="price-inp${isCustom?' price-custom':''}" type="number" min="0" step="1"
             value="${bk?(dispP??''):''}" placeholder="${calcP||''}"
             ${da} data-calc="${calcP}" title="ფასის კორექცია">
         </td>
-        <td class="td-pay${dc}${bk?'':' td-pay-empty'}">
+        <td class="td-pay${dc}${sc}${bk?'':' td-pay-empty'}">
           <button class="pbtn${pm==='cash'?' p-on':''}" ${da} data-pm="cash">ქ</button>
           <button class="pbtn${pm==='bog'?' p-on':''}" ${da} data-pm="bog">საქ</button>
           <button class="pbtn${pm==='tbc'?' p-on':''}" ${da} data-pm="tbc">თბს</button>
@@ -1113,12 +1157,12 @@ function openHoursModal(barberId){
   hoursModalBarberId=barberId;
   const b=barbers.find(x=>x.id===barberId); if(!b) return;
   const isOff=daysOffSet.has(barberId);
-  const dh=dayHoursMap[barberId];
+  const eff=effHours(barberId);
   $('hrsBName').textContent=b.name_ka;
   $('hrsOffNote').classList.toggle('hide',!isOff);
   $('hrsTimeFields').style.opacity=isOff?'.4':'1';
-  $('hrsOpen').value =dh?(dh.open.slice(0,5)) :'10:00';
-  $('hrsClose').value=dh?(dh.close.slice(0,5)):'20:00';
+  $('hrsOpen').value =eff?(eff.open.slice(0,5)) :'10:00';
+  $('hrsClose').value=eff?(eff.close.slice(0,5)):'20:00';
   $('hrsErr').textContent='';
   $('hoursModal').classList.remove('hide');
 }
@@ -1325,21 +1369,87 @@ $('saveEntry').addEventListener('click',async()=>{
 let allBarbers=[];
 
 async function loadAllBarbers(){
-  const {data}=await sb.from('barbers').select('id,name_ka,commission_pct,sort,active,is_founder').order('sort');
+  const [{data},{data:wh}]=await Promise.all([
+    sb.from('barbers').select('id,name_ka,commission_pct,sort,active,is_founder').order('sort'),
+    sb.from('working_hours').select('barber_id,weekday,open_time,close_time'),
+  ]);
   allBarbers=data||[];
+  weeklyAll={};
+  (wh||[]).forEach(r=>{ (weeklyAll[r.barber_id]=weeklyAll[r.barber_id]||{})[r.weekday]=r; });
   renderBarberMgmt();
 }
+
+/* ── Weekly schedule editor ── */
+const WD_NAMES=['კვირა','ორშაბათი','სამშაბათი','ოთხშაბათი','ხუთშაბათი','პარასკევი','შაბათი'];
+const WD_ORDER=[1,2,3,4,5,6,0]; /* Monday-first */
+let weekModalBarberId=null;
+
+function openWeekModal(barberId){
+  const b=allBarbers.find(x=>x.id===barberId); if(!b) return;
+  weekModalBarberId=barberId;
+  $('wkBName').textContent=b.name_ka+' — კვირის გრაფიკი';
+  const rows=weeklyAll[barberId]||{};
+  $('wkRows').innerHTML=WD_ORDER.map(wd=>{
+    const r=rows[wd];
+    return `<div class="wk-row" data-wd="${wd}">
+      <label><input type="checkbox" class="wk-on" ${r?'checked':''}>${WD_NAMES[wd]}</label>
+      <input type="time" class="wk-open" step="900" value="${r?r.open_time.slice(0,5):'10:00'}" ${r?'':'disabled'}>
+      <span class="dash">–</span>
+      <input type="time" class="wk-close" step="900" value="${r?r.close_time.slice(0,5):'20:00'}" ${r?'':'disabled'}>
+    </div>`;
+  }).join('');
+  $('wkErr').textContent='';
+  $('weekModal').classList.remove('hide');
+}
+
+$('wkRows').addEventListener('change',e=>{
+  if(!e.target.classList.contains('wk-on')) return;
+  const row=e.target.closest('.wk-row');
+  row.querySelectorAll('input[type=time]').forEach(i=>{ i.disabled=!e.target.checked; });
+});
+
+$('closeWeekModal').addEventListener('click',()=>$('weekModal').classList.add('hide'));
+$('weekModal').addEventListener('click',e=>{ if(e.target===$('weekModal')) $('weekModal').classList.add('hide'); });
+
+$('saveWeekBtn').addEventListener('click',async()=>{
+  const rows=[];
+  let bad=false;
+  $('wkRows').querySelectorAll('.wk-row').forEach(row=>{
+    if(!row.querySelector('.wk-on').checked) return;
+    const open=row.querySelector('.wk-open').value, close=row.querySelector('.wk-close').value;
+    if(!open||!close||open>=close){ bad=true; return; }
+    rows.push({barber_id:weekModalBarberId,weekday:Number(row.dataset.wd),open_time:open+':00',close_time:close+':00'});
+  });
+  if(bad){ $('wkErr').textContent='შეამოწმე საათები — დაწყება დასრულებაზე ადრე უნდა იყოს'; return; }
+  $('saveWeekBtn').disabled=true;
+  /* replace the barber's whole weekly schedule */
+  const {error:delErr}=await sb.from('working_hours').delete().eq('barber_id',weekModalBarberId);
+  const {error:insErr}=rows.length?await sb.from('working_hours').insert(rows):{error:null};
+  $('saveWeekBtn').disabled=false;
+  const err=delErr||insErr;
+  if(err){ $('wkErr').textContent=err.message; return; }
+  $('weekModal').classList.add('hide');
+  toast('✓ კვირის გრაფიკი შენახულია');
+  await loadAllBarbers();
+  await loadDay(); renderSchedule();
+});
 
 function renderBarberMgmt(){
   if(!$('barbMgmtList')) return;
   let html=`<table class="barb-tbl">
-    <thead><tr><th>სახელი</th><th>რ.</th><th>სტ.</th><th>ფუძ.</th><th></th></tr></thead><tbody>`;
+    <thead><tr><th>სახელი</th><th>რ.</th><th>სტ.</th><th>ფუძ.</th><th>გრაფიკი</th><th></th></tr></thead><tbody>`;
   allBarbers.forEach(b=>{
+    const wk=weeklyAll[b.id]||{};
+    const wkDays=Object.keys(wk).length;
+    /* compact preview: if every workday shares the same hours show them, else 'შერეული' */
+    const times=[...new Set(Object.values(wk).map(r=>r.open_time.slice(0,5)+'–'+r.close_time.slice(0,5)))];
+    const wkLbl=wkDays?`${times.length===1?times[0]:'შერეული'} · ${wkDays}დღე`:'+ გრაფიკი';
     html+=`<tr>
       <td><input class="b-inp b-name" data-bid="${b.id}" value="${esc(b.name_ka)}"></td>
       <td><input class="b-inp b-sort" data-bid="${b.id}" type="number" value="${b.sort??0}" style="width:44px"></td>
       <td><button class="barb-active-tog ${b.active?'is-active':''}" data-bid="${b.id}">${b.active?'აქტ.':'გათ.'}</button></td>
       <td><button class="barb-active-tog ${b.is_founder?'is-active':''} b-founder" data-bid="${b.id}">${b.is_founder?'კი':'არა'}</button></td>
+      <td><button class="wk-edit-btn" data-wkbid="${b.id}">${wkLbl}</button></td>
       <td><button class="barb-del" data-bid="${b.id}">✕</button></td>
     </tr>`;
   });
@@ -1372,6 +1482,9 @@ function renderBarberMgmt(){
       await sb.from('barbers').update({is_founder:!b.is_founder}).eq('id',btn.dataset.bid);
       await loadMeta(); renderFinance(); await loadAllBarbers();
     });
+  });
+  $('barbMgmtList').querySelectorAll('.wk-edit-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>openWeekModal(btn.dataset.wkbid));
   });
   $('barbMgmtList').querySelectorAll('.barb-del').forEach(btn=>{
     btn.addEventListener('click',async()=>{
@@ -1410,9 +1523,15 @@ $('saveBarbBtn').addEventListener('click',async()=>{
     photoUrl=publicUrl;
   }
 
-  const {error}=await sb.from('barbers').insert({name_ka:name,name_en:name,commission_pct:pct,sort,active:true,photo_url:photoUrl});
+  const {data:newB,error}=await sb.from('barbers').insert({name_ka:name,name_en:name,commission_pct:pct,sort,active:true,photo_url:photoUrl}).select('id').single();
   $('saveBarbBtn').disabled=false;
   if(error){ $('bErr').textContent='შეცდომა: '+error.message; return; }
+  /* seed a default weekly schedule (7 days, 10–20) so the new barber is bookable */
+  if(newB?.id){
+    await sb.from('working_hours').insert(
+      [0,1,2,3,4,5,6].map(wd=>({barber_id:newB.id,weekday:wd,open_time:'10:00:00',close_time:'20:00:00'}))
+    );
+  }
   $('barbModal').classList.add('hide');
   await loadMeta(); renderAll(); await loadAllBarbers();
 });

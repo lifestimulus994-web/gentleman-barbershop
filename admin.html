@@ -70,6 +70,9 @@ input,select{font-family:inherit}
   background:linear-gradient(135deg,rgba(99,102,241,.30),rgba(99,102,241,.16));
   border:1px solid rgba(99,102,241,.55);cursor:pointer;display:flex;flex-direction:column;gap:1px;transition:.12s}
 .bk:hover{filter:brightness(1.12);border-color:rgba(99,102,241,.9)}
+/* website bookings (manage_token) — blue edge + tint so origin is visible in any state */
+.bk.is-site{box-shadow:inset 4px 0 0 #2563eb;background:linear-gradient(135deg,rgba(37,99,235,.30),rgba(37,99,235,.14));border-color:rgba(37,99,235,.6)}
+.bk.is-site.is-done{background:linear-gradient(135deg,rgba(63,185,80,.26),rgba(63,185,80,.12))}
 .bk:active{transform:scale(.985)}
 .bk b{font-family:'Noto Sans Georgian','Archivo';font-weight:700;font-size:.84rem;line-height:1.2;color:var(--text);word-break:break-word}
 .bk .svc{font-size:.76rem;color:#c8caf6;line-height:1.2;font-weight:500;word-break:break-word}
@@ -514,7 +517,7 @@ input,select{font-family:inherit}
     const next=new Date(curDate); next.setDate(next.getDate()+1);
     const [{data:bookings,error},{data:offs},{data:dhrs}]=await Promise.all([
       sb.from('bookings')
-        .select('id,customer_name,customer_phone,starts_at,ends_at,barber_id,status,payment_method,services(name_en,name_ka,price)')
+        .select('id,customer_name,customer_phone,starts_at,ends_at,barber_id,status,payment_method,manage_token,services(name_en,name_ka,price)')
         .gte('starts_at',dayStr+'T00:00:00').lt('starts_at',ymd(next)+'T00:00:00')
         .neq('status','cancelled').order('starts_at'),
       sb.from('barber_days_off').select('barber_id').eq('off_date',dayStr),
@@ -551,7 +554,8 @@ input,select{font-family:inherit}
           const top=(minOf(bk.starts_at)-OPEN*60)*PPM;
           const hgt=Math.max((minOf(bk.ends_at)-minOf(bk.starts_at))*PPM-3,30);
           const done=bk.status==='done';
-          return `<div class="bk${done?' is-done':''}" data-id="${bk.id}" style="top:${top}px;height:${hgt}px">
+          const site=!!bk.manage_token; /* website bookings carry manage_token */
+          return `<div class="bk${done?' is-done':''}${site?' is-site':''}" data-id="${bk.id}" style="top:${top}px;height:${hgt}px"${site?' title="საიტიდან დაჯავშნილი"':''}>
             <span class="tap">&#8943;</span>
             <b>${esc(bk.customer_name)}</b>
             <span class="svc">${bk.services?esc(bk.services.name_ka):''}</span>
@@ -929,6 +933,7 @@ input,select{font-family:inherit}
        <div class="svc-l">${bk.services?esc(bk.services.name_ka):''}</div>
        <div class="meta">${hhmm(bk.starts_at)}–${hhmm(bk.ends_at)}<br>
        <a href="tel:${esc(bk.customer_phone)}">${esc(bk.customer_phone)}</a></div>
+       ${bk.manage_token?`<div class="meta" style="color:#2563eb;font-weight:600">🌐 საიტიდან დაჯავშნილი</div>`:''}
        ${done?`<div class="done-tag">&#10003; შესრულებული${payTag}</div>`:''}`;
     renderBkActions(done);
     bkModal.classList.remove('hide');
