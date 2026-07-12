@@ -648,28 +648,48 @@ input,select{font-family:inherit}
        </tbody>`;
 
     // ── manual income / expense ──
-    // „ნაშთი" entries are the manager's cash-drawer opening balance, not income.
-    // Salary-withdrawal expenses (განაღდება/ხელფასი) settle the accrued salaryTotal,
-    // so counting them again as an expense would double-subtract salaries.
-    const SAL_CATS=['განაღდება','ხელფასი'];
-    let manualIncome=0, manualExpense=0, salaryPayout=0;
+    // „ნაშთი" (opening balance), „განაღდება" (bank→drawer) and „ჩარიცხვა" (drawer→bank)
+    // are cash-drawer movements — excluded from income, expenses and net profit.
+    let manualIncome=0, manualExpense=0, ganagTot=0, chTot=0;
     finEntries.forEach(e=>{
-      if(e.kind==='income'){ if(e.category!=='ნაშთი') manualIncome+=(+e.amount); }
-      else if(SAL_CATS.includes(e.category)){ salaryPayout+=(+e.amount); }
+      if(e.kind==='income'){
+        if(e.category==='განაღდება') ganagTot+=(+e.amount);
+        else if(e.category!=='ნაშთი') manualIncome+=(+e.amount);
+      }
+      else if(e.category==='ჩარიცხვა'){ chTot+=(+e.amount); }
       else { manualExpense+=(+e.amount); }
     });
     const totalIncome=serviceIncome+manualIncome;
     const net=totalIncome-salaryTotal-manualExpense;
 
     const r=(k,v,cls='')=>`<div class="row"><span class="k">${k}</span><span class="v ${cls}">${v}</span></div>`;
+    const chEntry=finPeriod==='day' ? finEntries.find(e=>e.kind==='expense'&&e.category==='ჩარიცხვა') : null;
+    const chRow=finPeriod==='day'
+      ? `<div class="row"><span class="k" title="სალაროდან ბანკში ჩარიცხული ქეში — მენეჯერთან ჩანს, აკლდება ნაშთს">ჩარიცხვა ბანკში</span><span class="v"><input id="chInput" type="number" min="0" step="0.01" value="${chEntry?+chEntry.amount:0}" style="width:90px;background:var(--card-2);border:1px solid var(--line-2);border-radius:7px;padding:5px 8px;color:inherit;font:inherit;text-align:right"></span></div>`
+      : (chTot>0 ? r('ჩარიცხვა ბანკში', money(chTot)) : '');
+
     $('finSummary').innerHTML=
       r('სერვისები (შესრულებული)', money(serviceIncome)) +
       (manualIncome>0 ? r('დამატებითი შემოსავალი', money(manualIncome),'plus') : '') +
       r('შემოსავლის ჯამი', money(totalIncome),'plus') +
       r('ხელფასები', '– '+money(salaryTotal),'minus') +
-      (salaryPayout>0 ? r('აქედან გაცემულია', money(salaryPayout)) : '') +
       r('ხარჯები', '– '+money(manualExpense),'minus') +
+      (ganagTot>0 ? r('განაღდება (სალაროში)', money(ganagTot)) : '') +
+      chRow +
       `<div class="row total"><span class="k">სუფთა მოგება</span><span class="v net">${money(net)}</span></div>`;
+
+    const chInp=document.getElementById('chInput');
+    if(chInp) chInp.addEventListener('change',async()=>{
+      const val=parseFloat(chInp.value)||0;
+      if(chEntry){
+        await sb.from('finance_entries').update({amount:val}).eq('id',chEntry.id);
+      } else {
+        await sb.from('finance_entries').insert({
+          entry_date:start,kind:'expense',category:'ჩარიცხვა',amount:val,method:'cash'
+        });
+      }
+      renderFinance();
+    });
 
     // ── ledger list ──
     if(!finEntries.length){

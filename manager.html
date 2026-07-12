@@ -393,7 +393,7 @@ input,select,textarea{font-family:inherit}
         <input id="eCat" placeholder="კატ." list="catList" />
         <datalist id="catList">
           <option>პროდუქცია</option><option>ყავა</option><option>დაბანა</option>
-          <option>სასმელი</option><option>ხარჯი</option><option>განაღდება</option>
+          <option>სასმელი</option><option>ხარჯი</option><option>ხელფასი</option>
           <option>ქირა</option><option>კომუნალური</option><option>სხვა</option>
         </datalist>
       </div>
@@ -535,6 +535,7 @@ let bookings=[], finEntries=[];
 let dayHoursMap={}, weekHoursMap={}, daysOffSet=new Set();
 let weeklyAll={}; /* barber_id → [{weekday,open_time,close_time}] — for the weekly editor */
 let nashtEntryId=null, nashtAmount=0;
+let gngEntryId=null, gngAmount=0;
 const saveTimers={};
 let svcDropTarget=null;
 let hoursModalBarberId=null;
@@ -805,6 +806,9 @@ async function loadDay(){
   const nash=finEntries.find(e=>e.category==='ნაშთი'&&e.kind==='income');
   nashtEntryId=nash?.id||null;
   nashtAmount =Number(nash?.amount)||0;
+  const gng=finEntries.find(e=>e.category==='განაღდება'&&e.kind==='income');
+  gngEntryId=gng?.id||null;
+  gngAmount =Number(gng?.amount)||0;
 }
 
 /* ═══════════════════════════════════════════
@@ -1249,19 +1253,22 @@ function renderFinance(){
     cashInc+=sh.cash; bogInc+=sh.bog; tbcInc+=sh.tbc;
   });
 
-  const manInc    =finEntries.filter(e=>e.kind==='income'&&e.category!=='ნაშთი');
+  /* ნაშთი / განაღდება / ჩარიცხვა are cash-drawer movements, not income/expense */
+  const manInc    =finEntries.filter(e=>e.kind==='income'&&e.category!=='ნაშთი'&&e.category!=='განაღდება');
   const manIncTot =manInc.reduce((s,e)=>s+Number(e.amount),0);
   const manIncCash=manInc.filter(e=>(e.method||'cash')==='cash').reduce((s,e)=>s+Number(e.amount),0);
-  const expEntries=finEntries.filter(e=>e.kind==='expense');
+  const expEntries=finEntries.filter(e=>e.kind==='expense'&&e.category!=='ჩარიცხვა');
   const expTot    =expEntries.reduce((s,e)=>s+Number(e.amount),0);
   const expCash   =expEntries.filter(e=>(e.method||'cash')==='cash').reduce((s,e)=>s+Number(e.amount),0);
   const expBank   =expTot-expCash;
+  const chTot     =finEntries.filter(e=>e.kind==='expense'&&e.category==='ჩარიცხვა').reduce((s,e)=>s+Number(e.amount),0);
 
   const totalRev=totIncome+manIncTot;
-  /* cash drawer: opening + cash in − cash out.
-     Salaries are NOT auto-deducted — they leave the drawer only when actually
-     withdrawn (a cash expense entry like „განაღდება"/„ხელფასი"). */
-  const closing =nashtAmount+cashInc+manIncCash-expCash;
+  /* Gvantsa's model (2026-07-11):
+     ღამის ნაშთი = დილის ნაშთი + ქეში − ხელფასი − ხარჯი + განაღდება − ჩარიცხვა
+     barber salaries (totSal) are auto-deducted daily */
+  const closing  =nashtAmount+cashInc+manIncCash-totSal-expCash+gngAmount-chTot;
+  const netIncome=totalRev-totSal-expTot;
 
   const mLbl={cash:'ქეში',bog:'საქ.',tbc:'თბს.'};
 
@@ -1289,12 +1296,16 @@ function renderFinance(){
   if(unpaid>0) sumHtml+=`<tr class="s-indent"><td>გადაუხდ.</td><td>${fmt(unpaid)}</td></tr>`;
 
   sumHtml+=`<tr class="s-head"><td colspan="2">გასვლა</td></tr>
+    <tr class="s-minus"><td>ხელფასი (ბარბ.)</td><td>– ${fmt(totSal)}</td></tr>
     <tr class="s-minus"><td>ხარჯი (ქეში)</td><td>– ${fmt(expCash)}</td></tr>`;
 
   if(expBank>0) sumHtml+=`<tr class="s-indent"><td>ხარჯი (ბანკი)</td><td>– ${fmt(expBank)}</td></tr>`;
 
-  sumHtml+=`<tr class="s-indent"><td title="ინფორმაციულია — ნაშთს აკლდება მხოლოდ განაღდებისას (ქეშის ხარჯის ჩანაწერით)">ხელფასი (დარიცხ.)</td><td>${fmt(empSal)}</td></tr>
-    <tr class="s-bal"><td title="გახსნის ნაშთი + ქეშის შემოსავალი − ქეშის ხარჯი">ნაშთი (დახ.)</td><td style="color:var(--accent)">${fmt(closing)}</td></tr>
+  sumHtml+=`<tr class="s-head"><td colspan="2">ქეშის მოძრაობა</td></tr>
+    <tr class="s-bal"><td title="ბანკიდან/ბარათიდან განაღდებული თანხა, რომელიც სალაროში ჩაიდო">განაღდება (+)</td><td><input class="fin-edit-bal" id="gngInput" type="number" value="${gngAmount}"></td></tr>
+    <tr class="s-minus"><td title="სალაროდან ბანკში ჩარიცხული ქეში — შეყვანა ადმინ პანელიდან">ჩარიცხვა</td><td>– ${fmt(chTot)}</td></tr>
+    <tr class="s-total"><td title="შემ. ჯამი − ხელფასი − ხარჯი">სუფთა შემოსავალი</td><td>${fmt(netIncome)}</td></tr>
+    <tr class="s-bal"><td title="დილის ნაშთი + ქეში − ხელფასი − ხარჯი + განაღდება − ჩარიცხვა">ნაშთი (დახ.)</td><td style="color:var(--accent)">${fmt(closing)}</td></tr>
   </table>`;
   $('finSummary').innerHTML=sumHtml;
 
@@ -1313,8 +1324,23 @@ function renderFinance(){
     renderFinance();
   });
 
+  $('gngInput').addEventListener('change',async()=>{
+    const val=parseFloat($('gngInput').value)||0;
+    const ds=ymd(curDate);
+    if(gngEntryId){
+      await sb.from('finance_entries').update({amount:val}).eq('id',gngEntryId);
+    } else {
+      const {data}=await sb.from('finance_entries').insert({
+        entry_date:ds,kind:'income',category:'განაღდება',amount:val,method:'cash'
+      }).select().single();
+      gngEntryId=data?.id||null;
+    }
+    gngAmount=val;
+    renderFinance();
+  });
+
   /* ── Entries list ── */
-  const allEnt=finEntries.filter(e=>!(e.kind==='income'&&e.category==='ნაშთი'));
+  const allEnt=finEntries.filter(e=>!(e.kind==='income'&&(e.category==='ნაშთი'||e.category==='განაღდება')));
   let entHtml='';
   allEnt.forEach(e=>{
     const sign=e.kind==='income'?'+':'–';
@@ -1324,7 +1350,7 @@ function renderFinance(){
       <span class="cat">${esc(e.category)}</span>
       <span class="lbl">${mLbl[e.method||'cash']}${e.label?` · ${esc(e.label)}`:''}</span>
       <span class="amt">${fmt(e.amount)}</span>
-      <button class="eb del" data-eid="${e.id}">✕</button>
+      ${e.category==='ჩარიცხვა'?'':`<button class="eb del" data-eid="${e.id}">✕</button>`}
     </div>`;
   });
   $('finEntries').innerHTML=entHtml||'<div class="fin-empty">ჩანაწერები არ არის</div>';
